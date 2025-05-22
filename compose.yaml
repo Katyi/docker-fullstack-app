@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  frontend:
+    container_name: frontend
+    image: frontend
+    build:
+      context: ./frontend
+      dockerfile: frontend.dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      # Для клиентской части (в браузере), используется http://localhost:4000
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      # Для серверной части (в контейнере Next.js), используется http://api:4000
+      - API_INTERNAL_URL=http://api:4000
+      - NODE_OPTIONS="--dns-result-order=ipv4first"
+    restart: always
+    depends_on:
+      - api
+  api:
+    container_name: api
+    image: api
+    build:
+      context: ./api
+      dockerfile: api.dockerfile
+    ports:
+      - 4000:4000
+    environment:
+      # - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=public
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+  db:
+    container_name: db
+    image: postgres:12
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}

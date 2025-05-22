@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+:root {
+  /* --width1: var(--radix-select-trigger-width); */
+  font-family: 'Arial, Helvetica, sans-serif';
+}
+
+.selectContentWidth {
+  width: var(--radix-select-trigger-width);
+}
+
+.gelasio {
+  font-family: var(--font-gelasio);
+}
+
+.neucha {
+  font-family: var(--font-neucha);
+}
+
+.roboto {
+  font-family: var(--font-roboto-mono);
+}
+
+.snowBg {
+  /* background-image: url('/winter_sky_stars.png'); */
+  /* background-color: #bbd6e2; */
+  background-color: #ecebe9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pageContainer,
+.authContainer {
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  width: 80vw;
+  min-height: calc(100vh - 155px - 90px);
+  align-items: center;
+  padding: 16px 0;
+}
+
+.authContainer {
+  min-height: 100vh;
+  justify-content: center;
+}
+
+.triggerBtn {
+  background-color: rgb(248 250 252);
+}
+
+.triggerBtn:focus {
+  background-color: rgb(226 232 240);
+}
+
+.triggerBtn[data-placeholder] {
+  color: rgb(166, 174, 183);
+}
+
+
+/* Navbar styles */
+.halfLeftParallelogram {
+  position: relative;
+  width: 100%;
+  height: 0;
+  border-top: 25px solid #fff;
+  border-left: 0px solid transparent;
+  border-right: 25px solid transparent;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.halfRightParallelogram {
+  position: relative;
+  width: 100%;
+  height: 0;
+  border-bottom: 25px solid #fff;
+  border-right: 0px solid transparent;
+  border-left: 25px solid transparent;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.halfLeftParallelogram:hover {
+  border-top: 25px solid #d72147;
+  color: #fff;
+}
+
+.halfRightParallelogram:hover {
+  border-bottom: 25px solid #3475b9;
+  color: #fff;
+}
+
+.halfLeftParallelogram:focus {
+  border-top: 25px solid #d72147;
+  color: #fff;
+}
+
+.halfRightParallelogram:focus {
+  border-bottom: 25px solid #3475b9;
+  color: #fff;
+}
+
+.parallelogram,
+.parallelogramFocus {
+  position: relative;
+  width: 100%;
+  height: 25px;
+  transform: skew(-45deg);
+  background-color: #fff;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.parallelogramFocus {
+  background-color: #d72147;
+  color: #fff;
+}
+
+.parallelogram:first-of-type,
+.parallelogramFocus:first-of-type {
+  margin-right: 12px;
+}
+
+.parallelogram:hover {
+  background-color: #d72147;
+  color: #fff;
+}
+
+.parallelogram:focus {
+  background-color: #d72147;
+  color: #fff;
+}
+
+.menuTitle {
+  height: 25px;
+  position: absolute;
+  top: -25px;
+}
+
+.menuTitle1 {
+  transform: skew(45deg);
+}
+
+.menuTitle2 {
+  position: absolute;
+}
