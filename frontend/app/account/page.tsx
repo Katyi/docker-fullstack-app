@@ -116,7 +116,7 @@ const Account = () => {
 
   return (
     <main className="pageContainer bg-white">
-      <div className="flex items-start justify-around w-full py-6">
+      <div className="flex flex-col md:flex-row md:justify-between gap-4 w-full p-5 md:p-6">
         {/* USER IMAGE */}
         <form onSubmit={fetchImage}>
           <div className="flex flex-col w-full">
@@ -136,7 +136,7 @@ const Account = () => {
             width={0}
             height={0}
             sizes="100vw"
-            className="w-auto h-96"
+            className="w-full h-auto md:h-96"
           />
           <label
             htmlFor="file"
@@ -171,7 +171,10 @@ const Account = () => {
         </form>
 
         {/* USER DATA */}
-        <form className="w-[40%]" onSubmit={handleSubmit}>
+        <form
+          className="w-[100%] md:w-[40%] flex flex-col"
+          onSubmit={handleSubmit}
+        >
           <label className="text-sm text-gray-700 font-bold">Username:</label>
           <input
             placeholder="Username"

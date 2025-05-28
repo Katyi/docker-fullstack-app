@@ -36,7 +36,7 @@
   display: flex;
   flex-direction: column;
   width: 80vw;
-  min-height: calc(100vh - 155px - 90px);
+  min-height: calc(100vh - 188px - 90px);
   align-items: center;
   padding: 16px 0;
 }
@@ -60,7 +60,8 @@
 
 
 /* Navbar styles */
-.halfLeftParallelogram {
+.halfLeftParallelogram,
+.halfLeftParallelogramFocus {
   position: relative;
   width: 100%;
   height: 0;
@@ -72,7 +73,8 @@
   justify-content: center;
 }
 
-.halfRightParallelogram {
+.halfRightParallelogram,
+.halfRightParallelogramFocus {
   position: relative;
   width: 100%;
   height: 0;
@@ -94,12 +96,12 @@
   color: #fff;
 }
 
-.halfLeftParallelogram:focus {
+.halfLeftParallelogramFocus {
   border-top: 25px solid #d72147;
   color: #fff;
 }
 
-.halfRightParallelogram:focus {
+.halfRightParallelogramFocus {
   border-bottom: 25px solid #3475b9;
   color: #fff;
 }
@@ -131,8 +133,43 @@
   color: #fff;
 }
 
-.parallelogram:focus {
-  background-color: #d72147;
+.rectangle,
+.aboutRectangle,
+.rectangleFocus,
+.aboutRectangleFocus {
+  position: relative;
+  width: calc(100%/2 - 4px);
+  height: 0;
+  border-top: 25px solid #fff;
+  border-left: 0px solid transparent;
+  border-right: 0px solid transparent;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.rectangle:hover {
+  border-top: 25px solid #d72147;
+  color: #fff;
+}
+
+.rectangle:focus {
+  border-top: 25px solid #d72147;
+  color: #fff;
+}
+
+.rectangleFocus {
+  border-top: 25px solid #d72147;
+  color: #fff;
+}
+
+.aboutRectangle:hover {
+  border-top: 25px solid #3475b9;
+  color: #fff;
+}
+
+.aboutRectangleFocus {
+  border-top: 25px solid #3475b9;
   color: #fff;
 }
 
@@ -140,6 +177,7 @@
   height: 25px;
   position: absolute;
   top: -25px;
+
 }
 
 .menuTitle1 {
@@ -148,4 +186,17 @@
 
 .menuTitle2 {
   position: absolute;
+}
+
+.menuTitle3 {
+  position: absolute;
+  right: 10px;
+  top: -20px;
+  z-index: 10;
+}
+
+@media only screen and (min-width: 768px) {
+  .pageContainer {
+    min-height: calc(100vh - 155px - 90px);
+  }
 }

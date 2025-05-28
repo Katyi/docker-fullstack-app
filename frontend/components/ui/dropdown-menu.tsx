@@ -4,6 +4,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const DropdownMenuDemo = ({
   title,
@@ -13,6 +14,20 @@ const DropdownMenuDemo = ({
   menuItems: HeaderMenuItem[];
 }) => {
   const pathname = usePathname();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenWidth = () => {
+      setIsMobile(window.innerWidth < 768); // Настройте порог по своему усмотрению
+    };
+
+    checkScreenWidth();
+    window.addEventListener('resize', checkScreenWidth);
+
+    return () => {
+      window.removeEventListener('resize', checkScreenWidth);
+    };
+  }, []);
 
   return (
     <DropdownMenu.Root>
@@ -24,21 +39,24 @@ const DropdownMenuDemo = ({
             pathname.split('/')[1] === 'albums' ||
             pathname === '/faves') &&
           menuItems[0].url === '/postcards'
-            ? 'parallelogramFocus'
-            : (pathname === '/users' || pathname.split('/')[1] === 'users') &&
+            ? `${isMobile ? 'rectangleFocus' : 'parallelogramFocus'}`
+            : // 'parallelogramFocus'
+            (pathname === '/users' || pathname.split('/')[1] === 'users') &&
               menuItems[0].url === '/users'
-            ? 'parallelogramFocus'
-            : 'parallelogram'
+            ? `${isMobile ? 'rectangleFocus' : 'parallelogramFocus'}`
+            : `${isMobile ? 'rectangle' : 'parallelogram'}`
         }
         asChild
       >
         <div className="cursor-pointer">
-          <p className="menuTitle1">{title}</p>
-          <ChevronDownIcon className="menuTitle1 ml-2" />
+          <p className={`${isMobile ? 'menuTitle' : 'menuTitle1'}`}>{title}</p>
+          <ChevronDownIcon
+            className={`${isMobile ? `menuTitle3` : 'menuTitle1 ml-1'}`}
+          />
         </div>
       </DropdownMenu.Trigger>
 
-      <DropdownMenu.Content className="bg-white w-[calc(80vw/4-13px)] ml-[-24px] mt-0.5 rounded-b-md z-20">
+      <DropdownMenu.Content className="bg-white w-[calc(80vw/2-4px)] md:w-[calc(80vw/4-13px)] md:ml-[-24px] mt-0.5 rounded-b-md z-20">
         {menuItems.map((item) => (
           <DropdownMenu.Item
             key={item.label}

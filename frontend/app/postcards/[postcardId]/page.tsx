@@ -16,7 +16,7 @@ const PostcardPage = async (props: PostcardPageProps) => {
   }
   return (
     <main className="pageContainer">
-      <div className="mt-6 flex items-center justify-around bg-white w-full py-6">
+      <div className="mt-6 flex flex-col lg:flex-row lg:justify-around bg-white w-full lg:p-6">
         <Image
           src={postcard.imageUrl}
           alt="postcard"
@@ -24,10 +24,10 @@ const PostcardPage = async (props: PostcardPageProps) => {
           width={0}
           height={0}
           sizes="100vw"
-          className="w-auto h-96"
+          className="w-full h-auto lg:w-auto lg:h-96"
         />
 
-        <div className="p-4">
+        <div className="p-4 w-full flex flex-col lg:items-center">
           <h1 className="text-xl font-bold text-gray-800 text-center mb-2">
             {postcard?.title}
           </h1>

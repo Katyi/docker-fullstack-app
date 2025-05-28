@@ -17,7 +17,7 @@ const UserPage = async (props: UserPageProps) => {
 
   return (
     <main className="pageContainer">
-      <div className="mt-6 flex items-center justify-around bg-white w-full py-6">
+      <div className="mt-6 flex flex-col md:flex-row items-center md:items-center md:justify-around bg-white w-full py-6">
         <Image
           src={user.imageUrl ? user.imageUrl : '/user.png'}
           alt="user"
@@ -25,7 +25,7 @@ const UserPage = async (props: UserPageProps) => {
           width={0}
           height={0}
           sizes="100vw"
-          className="w-auto h-96"
+          className="w-full h-auto md:w-auto md:h-96"
         />
         {/* <div>
           <h1 className="text-xl font-bold text-gray-800 text-center mb-2">
@@ -36,7 +36,7 @@ const UserPage = async (props: UserPageProps) => {
           <p>Birthday: {user?.birthday ? 'Yes' : 'No'}</p>
           {user?.createdAt && <p>Joined: {formatDay(user?.createdAt)} </p>}
         </div> */}
-        <div className="p-4">
+        <div className="p-4 w-full flex flex-col md:items-center">
           <h1 className="text-xl font-bold text-gray-800 text-center mb-2">
             {user?.name}
           </h1>

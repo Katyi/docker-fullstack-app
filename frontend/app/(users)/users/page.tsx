@@ -23,20 +23,17 @@ const UsersPage = () => {
 
       <div className="flex flex-wrap w-[80vw] justify-between after:flex-auto gap-10">
         {users.map((user: User) => (
-          <Card key={user.id} className="bg-gray-100 shadow-lg h-[300px]">
+          <Card
+            key={user.id}
+            className="bg-gray-100 shadow-lg w-[80vw] h-fit sm:w-auto sm:h-[300px] flex-grow-0"
+          >
             <Image
               src={user.imageUrl ? user.imageUrl : '/user.png'}
               alt="user"
               width={0}
               height={0}
               sizes="100vw"
-              style={{
-                width: 'auto',
-                minWidth: '100px',
-                height: '70%',
-                objectFit: 'cover',
-                cursor: 'pointer',
-              }}
+              className="w-full h-auto sm:w-auto sm:min-h-[100px] sm:h-[70%] object-cover cursor-pointer"
               onClick={() => redirect(`/users/${user.id}`)}
             />
             <div className="p-2">

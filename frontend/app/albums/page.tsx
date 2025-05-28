@@ -93,12 +93,12 @@ const Albums = () => {
           albumsCount > 0 ? 'bg-white' : 'bg-transparent'
         }`}
       >
-        <div className="flex flex-wrap w-[calc(80vw-40px)] gap-4 mb-10">
+        <div className="flex flex-wrap w-full gap-4 mb-10">
           {albums.map((album) => (
             // <div key={album.id} className="bg-white shadow rounded p-4">
             <Card
               key={album.id}
-              className="bg-gray-100 shadow-lg h-[300px] w-[calc((80vw-40px))] sm:w-[calc((80vw-40px-16px)/2)] md:w-[calc((80vw-40px-32px)/3)] lg:w-[calc((80vw-40px-48px)/4)]"
+              className="bg-gray-100 shadow-lg h-[300px] w-full sm:w-[calc((80vw-40px-16px)/2)] md:w-[calc((80vw-40px-32px)/3)] lg:w-[calc((80vw-40px-48px)/4)]"
             >
               {postcards.find((item) => item.albumId === album.id) ? (
                 <Image
@@ -110,12 +110,7 @@ const Albums = () => {
                   width={0}
                   height={0}
                   sizes="100vw"
-                  style={{
-                    width: '100%',
-                    height: '80%',
-                    objectFit: 'cover',
-                    cursor: 'pointer',
-                  }}
+                  className="w-full h-[80%] object-cover cursor-pointer"
                   onClick={() => router.push(`/albums/${album.id}`)}
                 />
               ) : (

@@ -34,4 +34,4 @@ export const countries: { [key: string]: string } = {
   spain: '🇪🇸',
 };
 
-export const pageSize = 5;
+export const pageSize = 10;

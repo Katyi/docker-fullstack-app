@@ -81,35 +81,36 @@ const Home = () => {
   ) : (
     <main className="pageContainer">
       {/* <NavBar /> */}
-      <div className="bg-white p-5 z-1">
+      <div className="w-full bg-white p-5 z-1">
         <h1 className="text-3xl font-bold mb-4">What about this project?</h1>
         <p className="mt-3 mb-3">
           It is a project that allows you store your Postcrossing collection,
           either privately or share them with the world.
           <Link href={'./about'} className="text-blue-500">
-            {' '}
-            Learn more.
+            {'  '}
+            Learn more about Postcrossing.
           </Link>
         </p>
         <h1 className="text-3xl font-bold mb-4">How does it work?</h1>
         <p className="mt-3 mb-3">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquam
-          praesentium voluptatum illum, unde repellat voluptate ad eos harum
-          assumenda ea eius, iure magni nam veniam qui error molestiae earum
-          cum?
+          Welcome to home for all your postcards. It is the site on the web for
+          organizing, sharing and storing your postcrossing postcards. We
+          provide you the tools for easy collaboration between postcrossers.
         </p>
       </div>
       <br />
 
       {/* PUBLIC POSTCARDS */}
       <div className="w-full bg-white p-5">
-        <p className="mt-3 mb-3 text-3xl font-bold">Postcards gallery</p>
-        <div className="flex flex-wrap w-full justify-between gap-4 after:flex-auto mb-10">
+        <p className="mt-3 mb-3 text-3xl font-bold text-center sm:text-left">
+          Postcards gallery
+        </p>
+        <div className="flex flex-wrap w-full justify-center sm:justify-between gap-4 sm:after:flex-auto mb-10">
           {allPublicPostcards.map((postcard) => (
             // <Card key={postcard.id} className="bg-gray-100 shadow-lg h-[340px]">
             <Card
               key={postcard.id}
-              className="bg-gray-100 shadow-lg h-[340px] flex-grow-0"
+              className="bg-gray-100 shadow-lg w-[80vw] h-fit sm:w-auto sm:h-[340px] flex-grow-0"
             >
               <Tooltip content="View postcard">
                 <Image
@@ -118,13 +119,7 @@ const Home = () => {
                   width={0}
                   height={0}
                   sizes="100vw"
-                  style={{
-                    width: 'auto',
-                    minWidth: '240px',
-                    height: '84%',
-                    objectFit: 'cover',
-                    cursor: 'pointer',
-                  }}
+                  className="w-full h-auto sm:w-auto sm:min-h-[240px] sm:h-[84%] object-cover cursor-pointer"
                   onClick={() => redirect(`/postcards/${postcard.id}`)}
                 />
               </Tooltip>

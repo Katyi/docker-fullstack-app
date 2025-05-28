@@ -87,7 +87,10 @@ const Faves = () => {
       >
         <div className="flex flex-wrap justify-between after:flex-auto gap-4 mb-10">
           {likesWithPostcards.map((like) => (
-            <Card key={like.id} className="bg-gray-100 shadow-lg h-[340px]">
+            <Card
+              key={like.id}
+              className="bg-gray-100 shadow-lg w-[80vw] h-fit sm:w-auto sm:h-[340px] flex-grow-0"
+            >
               <Image
                 src={`${like.postcard?.imageUrl}`}
                 alt="postcard"
@@ -95,13 +98,7 @@ const Faves = () => {
                 width={0}
                 height={0}
                 sizes="100vw"
-                style={{
-                  width: 'auto',
-                  minWidth: '240px',
-                  height: '80%',
-                  objectFit: 'cover',
-                  cursor: 'pointer',
-                }}
+                className="w-full h-auto sm:min-h-[240px] sm:h-[80%] object-cover cursor-pointer"
                 onClick={() => redirect(`/postcards/${like.postcardId}`)}
               />
               {/* {like.postcard?.title} */}

@@ -168,7 +168,11 @@ const Postcards = () => {
       >
         <div className="flex flex-wrap justify-between after:flex-auto gap-4 mb-10">
           {postcards?.map((postcard: Postcard) => (
-            <Card key={postcard.id} className="bg-gray-100 shadow-lg h-[340px]">
+            <Card
+              key={postcard.id}
+              // className="bg-gray-100 shadow-lg h-[340px]"
+              className="bg-gray-100 shadow-lg w-[80vw] h-fit sm:w-auto sm:h-[340px] flex-grow-0"
+            >
               <Tooltip content="View postcard">
                 <Image
                   src={`${postcard.imageUrl}`}
@@ -177,13 +181,7 @@ const Postcards = () => {
                   width={0}
                   height={0}
                   sizes="100vw"
-                  style={{
-                    width: 'auto',
-                    minWidth: '240px',
-                    height: '80%',
-                    objectFit: 'cover',
-                    cursor: 'pointer',
-                  }}
+                  className="w-full h-auto sm:min-h-[240px] sm:h-[80%] object-cover cursor-pointer"
                   onClick={() => router.push(`/postcards/${postcard.id}`)}
                 />
               </Tooltip>

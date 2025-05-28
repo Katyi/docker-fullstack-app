@@ -155,7 +155,10 @@ const AlbumPage = () => {
       >
         <div className="mt-5 flex flex-wrap w-[calc(80vw-40px)] gap-4 justify-between after:flex-auto mb-10">
           {postcardsInAlbum.map((postcard) => (
-            <Card key={postcard.id} className="bg-gray-100 shadow-lg h-[300px]">
+            <Card
+              key={postcard.id}
+              className="bg-gray-100 shadow-lg w-[80vw] h-fit sm:w-auto sm:h-[300px] flex-grow-0"
+            >
               <Tooltip content="View postcard">
                 <Image
                   src={`${postcard?.imageUrl}`}
@@ -163,13 +166,7 @@ const AlbumPage = () => {
                   width={0}
                   height={0}
                   sizes="100vw"
-                  style={{
-                    width: 'auto',
-                    minWidth: '200px',
-                    height: '80%',
-                    objectFit: 'cover',
-                    cursor: 'pointer',
-                  }}
+                  className="w-full h-auto sm:w-auto sm:min-h-[200px] sm:h-[80%] object-cover cursor-pointer"
                   onClick={() => redirect(`/postcards/${postcard.id}`)}
                 />
               </Tooltip>
