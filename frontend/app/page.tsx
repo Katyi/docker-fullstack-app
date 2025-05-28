@@ -106,7 +106,7 @@ const Home = () => {
           Postcards gallery
         </p>
         <div className="flex flex-wrap w-full justify-center sm:justify-between gap-4 sm:after:flex-auto mb-10">
-          {allPublicPostcards.map((postcard) => (
+          {allPublicPostcards?.map((postcard) => (
             // <Card key={postcard.id} className="bg-gray-100 shadow-lg h-[340px]">
             <Card
               key={postcard.id}
