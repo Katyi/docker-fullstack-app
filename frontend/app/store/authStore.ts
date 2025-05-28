@@ -27,7 +27,8 @@ interface AuthState {
   deleteUser: (userId: string) => Promise<void>;
 }
 
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
+// axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
+axios.defaults.baseURL = 'http://212.113.120.58:4000';
 
 const useAuthStore = create<AuthState>()(
   persist(
