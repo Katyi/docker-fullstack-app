@@ -8,7 +8,7 @@ RUN npm install
 
 COPY ./.env ./.env
 
-COPY prisma ./prisma
+COPY api/prisma ./prisma
 
 RUN npx prisma generate
 
