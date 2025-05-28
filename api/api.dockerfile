@@ -12,9 +12,7 @@ COPY api/prisma ./prisma
 
 RUN npx prisma generate
 
-RUN npx prisma migrate deploy
-
-COPY . .
+COPY api/. .
 
 EXPOSE 4000
 
