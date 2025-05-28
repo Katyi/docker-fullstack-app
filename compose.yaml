@@ -8,7 +8,7 @@ services:
       context: ./frontend
       dockerfile: frontend.dockerfile
     ports:
-      - 3000:3000
+      - 3001:3000
     environment:
       # Для клиентской части (в браузере), используется http://localhost:4000
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}

@@ -20,7 +20,11 @@ app.use(express.json());
 //cors
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'http://frontend:3000'],
+    origin: [
+      'http://localhost:3000',
+      'http://frontend:3000',
+      'http://212.113.120.58:3001',
+    ],
     credentials: true,
   })
 ); // Allow CORS from your frontend
