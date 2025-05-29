@@ -5,8 +5,8 @@ services:
     container_name: frontend
     image: frontend
     build:
-      context: ./frontend
-      dockerfile: frontend.dockerfile
+      context: .
+      dockerfile: ./frontend/frontend.dockerfile
     ports:
       - 3001:3000
     environment:
