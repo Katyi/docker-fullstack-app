@@ -172,7 +172,7 @@ router.get('/inalbum/:albumId', checkAuth, async (req, res) => {
 });
 
 //get one postcard by id
-router.get('/:id', checkAuth, async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const postcard = await prisma.postcard.findUnique({
       where: {

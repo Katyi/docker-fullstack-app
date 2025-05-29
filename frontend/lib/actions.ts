@@ -10,9 +10,7 @@ export const getUser = async (id: string) => {
   const token = cookieStore.get('token');
 
   try {
-    const response = await axios.get(`/users/${id}`, {
-      headers: { Cookie: `token=${token?.value}` },
-    });
+    const response = await axios.get(`/users/${id}`);
     return response.data;
   } catch (error) {
     return error;
@@ -25,9 +23,7 @@ export const getPostcard = async (id: string) => {
   const token = cookieStore.get('token');
 
   try {
-    const response = await axios.get(`/postcards/${id}`, {
-      headers: { Cookie: `token=${token?.value}` },
-    });
+    const response = await axios.get(`/postcards/${id}`);
     return await response.data;
   } catch (error) {
     return error;
