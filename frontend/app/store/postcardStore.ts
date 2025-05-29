@@ -36,8 +36,8 @@ interface PostcardState {
   deletePostcard: (postcardId: string) => Promise<void>;
 }
 
-// axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
-axios.defaults.baseURL = 'http://212.113.120.58:4000';
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
+// axios.defaults.baseURL = 'http://212.113.120.58:4000';
 
 const usePostcardStore = create<PostcardState>((set) => ({
   postcards: [],
