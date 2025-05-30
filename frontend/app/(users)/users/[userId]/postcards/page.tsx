@@ -3,6 +3,7 @@
 import useAuthStore from '@/app/store/authStore';
 import useLikeStore from '@/app/store/likeStore';
 import usePostcardStore from '@/app/store/postcardStore';
+import useUserStore from '@/app/store/userStore';
 import Pagination from '@/components/ui/pagination';
 import Tooltip from '@/components/ui/tooltip';
 import { pageSize } from '@/lib/constants';
@@ -13,7 +14,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const UserPostcards = () => {
-  const { getUser, user } = useAuthStore();
+  const { user } = useAuthStore();
+  const { user: currentUser, getUser } = useUserStore();
   const {
     getPublicPostcards,
     publicPostcards,
@@ -77,9 +79,11 @@ const UserPostcards = () => {
   }, [userId, getPublicPostcardsCount]);
 
   useEffect(() => {
-    if (userId)
+    if (userId) {
       getPublicPostcards(userId, (currentPage - 1) * pageSize, pageSize);
-  }, [getPublicPostcards, userId, currentPage]);
+      getUser(userId);
+    }
+  }, [getPublicPostcards, getUser, userId, currentPage]);
 
   useEffect(() => {
     if (user?.id) getLikes(user.id);
@@ -89,7 +93,7 @@ const UserPostcards = () => {
     <main className="pageContainer">
       <div className="flex w-full gap-2 mb-4 items-center">
         <h1 className="text-xl font-bold text-gray-600">
-          {publicPostcards[0]?.user?.name}
+          {currentUser?.name}
           {"'"}s public postcards
         </h1>
       </div>
