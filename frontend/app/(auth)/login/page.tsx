@@ -37,10 +37,10 @@ const Login = () => {
   };
 
   return (
-    <main className="authContainer">
+    <main className="pageContainer justify-center">
       <form
         onSubmit={handleSubmit}
-        className="p-4 bg-white rounded shadow w-[30vw]"
+        className="p-4 bg-white rounded shadow w-full lg:w-[80%] xl:w-1/2"
       >
         <h2 className="text-2xl gelasio">Log In</h2>
         <input
