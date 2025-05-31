@@ -12,6 +12,7 @@ import useAlbumStore from '@/app/store/albumStore';
 import {
   CardStackPlusIcon,
   FileMinusIcon,
+  FilePlusIcon,
   HeartFilledIcon,
   HeartIcon,
 } from '@radix-ui/react-icons';
@@ -21,6 +22,7 @@ import useAuthStore from '@/app/store/authStore';
 import { userRequest } from '@/lib/requestMethods';
 import Pagination from '@/components/ui/pagination';
 import { pageSize } from '@/lib/constants';
+import AddToAlbum from '@/components/addToAlbum/addToAlbum';
 
 const AlbumPage = () => {
   const params = useParams<{ albumId: string }>();
@@ -43,9 +45,11 @@ const AlbumPage = () => {
   const { getLikes, likes, addLike, deleteLike, deleteLikesOfPostcard } =
     useLikeStore();
   const [addModal, setAddModal] = useState<boolean>(false);
+  const [addModal1, setAddModal1] = useState<boolean>(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [file, setFile] = useState<FormData | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPostcard, setCurrentPostcard] = useState<Postcard | null>(null);
   const [newPostcard, setNewPostcard] = useState<NewPostcard>({
     title: '',
     description: '',
@@ -98,6 +102,21 @@ const AlbumPage = () => {
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleAddToAlbum = async (postcard: Postcard, album: Album) => {
+    if (!postcard.albumId) {
+      await updatePostcard({ ...postcard, albumId: album.id });
+      setAddModal1(false);
+    } else if (postcard.albumId) {
+      if (postcard.albumId === album.id) {
+        await updatePostcard({ ...postcard, albumId: null });
+        setAddModal1(false);
+      } else {
+        await updatePostcard({ ...postcard, albumId: album.id });
+        setAddModal1(false);
+      }
     }
   };
 
@@ -157,7 +176,7 @@ const AlbumPage = () => {
           {postcardsInAlbum.map((postcard) => (
             <Card
               key={postcard.id}
-              className="bg-gray-100 shadow-lg w-[80vw] h-fit sm:w-auto sm:h-[300px] flex-grow-0"
+              className="bg-gray-100 shadow-lg w-[80vw] h-fit sm:w-auto sm:h-[340px] flex-grow-0"
             >
               <Tooltip content="View postcard">
                 <Image
@@ -166,30 +185,46 @@ const AlbumPage = () => {
                   width={0}
                   height={0}
                   sizes="100vw"
-                  className="w-full h-auto sm:w-auto sm:min-h-[200px] sm:h-[80%] object-cover cursor-pointer"
+                  className="w-full h-auto sm:min-h-[240px] sm:h-[80%] object-cover cursor-pointer"
                   onClick={() => redirect(`/postcards/${postcard.id}`)}
                 />
               </Tooltip>
-              {/* title, description, delete and likes */}
-              <div className="flex items-center justify-between px-6 py-2">
+              {/* title, delete and likes */}
+              <div className="flex flex-col px-4 py-2 gap-1">
                 {/* title and description */}
-                <div className="">
-                  <h2 className="text-sm font-bold">{postcard.title}</h2>
-                  <p className="text-sm font-thin">{postcard.description}</p>
-                </div>
+                <h2 className="text-sm font-bold align-text-top">
+                  {postcard.title}
+                </h2>
+
                 {/* delete and likes */}
-                <div className="flex gap-2 items-center">
-                  {/* <FileMinusIcon
-                  className="cursor-pointer"
-                  // onClick={() => handleDeletePostcard(postcard)}
-                /> */}
-                  {/* Delete postcard */}
-                  <Tooltip content="Delete postcard">
-                    <FileMinusIcon
-                      className="cursor-pointer"
-                      onClick={() => handleDeletePostcard(postcard)}
-                    />
-                  </Tooltip>
+                <div className="flex gap-1 items-center justify-between">
+                  {/* Add to album and Delete postcard */}
+                  <div className="flex items-center gap-0.5">
+                    <Tooltip content="Add to album">
+                      <button
+                        type="button"
+                        className="border-transparent focus:outline-none cursor-pointer"
+                        onClick={() => {
+                          setAddModal1(true);
+                          setCurrentPostcard(postcard);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Escape') {
+                            setAddModal1(false);
+                          }
+                        }}
+                      >
+                        <FilePlusIcon />
+                      </button>
+                    </Tooltip>
+
+                    <Tooltip content="Delete postcard">
+                      <FileMinusIcon
+                        className="cursor-pointer"
+                        onClick={() => handleDeletePostcard(postcard)}
+                      />
+                    </Tooltip>
+                  </div>
                   <Tooltip content="Like">
                     <div className="flex gap-1 items-center justify-between w-7 h-6">
                       {postcard.likes &&
@@ -244,6 +279,16 @@ const AlbumPage = () => {
           setFile={setFile}
           setCurrentPage={setCurrentPage}
         />
+      </Modal>
+
+      <Modal isOpen={addModal1} onClose={() => setAddModal1(false)}>
+        {currentPostcard && (
+          <AddToAlbum
+            setAddModal1={setAddModal1}
+            handleAddToAlbum={handleAddToAlbum}
+            currentPostcard={currentPostcard}
+          />
+        )}
       </Modal>
     </div>
   );
