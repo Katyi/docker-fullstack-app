@@ -33,7 +33,7 @@ const AddPostcard = ({
   setCurrentPage,
 }: ComponentProps) => {
   const {
-    getPostcards,
+    getUserPostcards,
     addPostcard,
     getPostcardByAlbumId,
     getUserPostcardsCount,
@@ -66,7 +66,13 @@ const AddPostcard = ({
 
   const fetchImage = async () => {
     try {
-      await userRequest.post('/upload/image-upload', file);
+      const response = await userRequest.post('/upload/image-upload', file);
+      const { width, height } = response.data;
+      setNewPostcard(prev => ({
+        ...prev,
+        width,
+        height,
+      }));
     } catch (error) {
       console.log(error);
     }
@@ -75,15 +81,27 @@ const AddPostcard = ({
   //create postcard
   const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let width, height;
     if (file) {
-      await fetchImage();
+      // await fetchImage();
+      const response = await userRequest.post('/upload/image-upload', file);
+      width = response.data.width;
+      height = response.data.height;
     }
 
-    const result = postcardSchema.safeParse(newPostcard);
+    
+
+    const postcardToSend = {
+      ...newPostcard,
+      width,
+      height,
+    };
+
+    const result = postcardSchema.safeParse(postcardToSend);
     if (result.success) {
-      await addPostcard(newPostcard);
+      await addPostcard(postcardToSend);
       if (!album && newPostcard.userId) {
-        await getPostcards(newPostcard.userId, 0, pageSize);
+        await getUserPostcards(newPostcard.userId, 0, pageSize);
         await getUserPostcardsCount(newPostcard.userId);
       }
       if (album && newPostcard.albumId) {

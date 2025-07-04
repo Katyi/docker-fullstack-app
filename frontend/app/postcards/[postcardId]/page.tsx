@@ -7,7 +7,7 @@ const PostcardPage = async (props: PostcardPageProps) => {
   const postcard: Postcard = await getPostcard(postcardId);
   const album = postcard?.albumId ? await getAlbum(postcard.albumId) : null;
 
-  if (!postcard) {
+  if (!postcard.id) {
     return (
       <div className="pageContainer justify-center">
         <p className="text-red-500 font-bold text-lg">Postcard ID not found</p>

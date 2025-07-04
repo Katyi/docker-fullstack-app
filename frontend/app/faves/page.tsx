@@ -8,14 +8,15 @@ import Loader from '@/components/loader/loader';
 import { Card } from '@radix-ui/themes';
 import Tooltip from '@/components/ui/tooltip';
 import Image from 'next/image';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Pagination from '@/components/ui/pagination';
 import { pageSize } from '@/lib/constants';
 import { HeartFilledIcon, HeartIcon } from '@radix-ui/react-icons';
+import Gallery from '@/components/gallery/Gallery';
 
 const Faves = () => {
   const router = useRouter();
-  const { user } = useAuthStore();
+  const { user, isLoading: authLoading } = useAuthStore();
   const {
     getLikesWithPostcards,
     getUserLikesCount,
@@ -65,7 +66,13 @@ const Faves = () => {
       getLikesWithPostcards(user.id, (currentPage - 1) * pageSize, pageSize);
   }, [user, getLikesWithPostcards, currentPage]);
 
-  return isLoading ? (
+  useEffect(() => {
+    if (!user && !authLoading) {
+      router.push('/');
+    }
+  }, [user, authLoading, router]);
+
+  return isLoading || !user ? (
     <Loader />
   ) : error ? (
     <div className="pageContainer justify-center">
@@ -85,26 +92,13 @@ const Faves = () => {
           likesCount > 0 ? 'bg-white' : 'bg-transparent'
         }`}
       >
-        <div className="flex flex-wrap justify-between after:flex-auto gap-4 mb-10">
-          {likesWithPostcards.map((like) => (
-            <Card
-              key={like.id}
-              className="bg-gray-100 shadow-lg w-[80vw] h-fit sm:w-auto sm:h-[340px] flex-grow-0"
-            >
-              <Image
-                src={`${like.postcard?.imageUrl}`}
-                alt="postcard"
-                priority={true}
-                width={0}
-                height={0}
-                sizes="100vw"
-                className="w-full h-auto sm:min-h-[240px] sm:h-[80%] object-cover cursor-pointer"
-                onClick={() => redirect(`/postcards/${like.postcardId}`)}
-              />
-              {/* {like.postcard?.title} */}
+        <Gallery
+          items={likesWithPostcards}
+          getPostcard={(like) => like.postcard!}
+          renderCardContent={(like) => {
+            return (
               <div className="flex items-center justify-between px-4">
                 <div className="flex flex-col py-2">
-                  {/* userName */}
                   <Tooltip content="User profile">
                     <p
                       className="text-sm font-bold text-gray-500 underline cursor-pointer"
@@ -115,12 +109,10 @@ const Faves = () => {
                       {like.postcard?.user?.name}
                     </p>
                   </Tooltip>
-                  {/* title */}
                   <p className="w-[120px] text-sm font-bold truncate">
                     {like.postcard?.title}
                   </p>
                 </div>
-                {/* Likes */}
                 <Tooltip content="Like">
                   <div className="flex gap-1 items-center">
                     <HeartFilledIcon
@@ -128,7 +120,6 @@ const Faves = () => {
                       className="cursor-pointer"
                       onClick={() => handleDeleteLikePostcard(like)}
                     />
-
                     <div className="">
                       <p className="text-sm text-gray-500">
                         {like?.postcard?.likes !== 0
@@ -139,16 +130,19 @@ const Faves = () => {
                   </div>
                 </Tooltip>
               </div>
-            </Card>
-          ))}
-        </div>
+            );
+          }}
+        />
 
         {likesCount > pageSize && (
-          <Pagination
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            numberOfPages={numberOfPages}
-          />
+          <>
+            <br />
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              numberOfPages={numberOfPages}
+            />
+          </>
         )}
       </div>
     </main>

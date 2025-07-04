@@ -3,27 +3,28 @@
 import Loader from '@/components/loader/loader';
 import useAuthStore from './store/authStore';
 import Link from 'next/link';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import usePostcardStore from './store/postcardStore';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { Card } from '@radix-ui/themes';
 import Pagination from '@/components/ui/pagination';
 import Tooltip from '@/components/ui/tooltip';
 import { HeartFilledIcon, HeartIcon } from '@radix-ui/react-icons';
 import useLikeStore from './store/likeStore';
 import { pageSize } from '@/lib/constants';
 import Postcards from './postcards/page';
+import Gallery from '@/components/gallery/Gallery';
 
 const Home = () => {
   const router = useRouter();
-  const { user, isLoading } = useAuthStore();
+  const { user } = useAuthStore();
   const {
     allPublicPostcards,
     publicPostcardsCount,
     getAllPublicPostcards,
     getAllPublicPostcardsCount,
     updatePostcard,
+    isLoading,
+    error,
   } = usePostcardStore();
   const { getLikes, likes, addLike, deleteLike } = useLikeStore();
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -105,77 +106,68 @@ const Home = () => {
         <p className="mt-3 mb-3 text-3xl font-bold text-center sm:text-left">
           Postcards gallery
         </p>
-        <div className="flex flex-wrap w-full justify-center sm:justify-between gap-4 sm:after:flex-auto mb-10">
-          {allPublicPostcards?.map((postcard) => (
-            // <Card key={postcard.id} className="bg-gray-100 shadow-lg h-[340px]">
-            <Card
-              key={postcard.id}
-              className="bg-gray-100 shadow-lg w-[80vw] h-fit sm:w-auto sm:h-[340px] flex-grow-0"
-            >
-              <Tooltip content="View postcard">
-                <Image
-                  src={postcard.imageUrl}
-                  alt="postcard"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  className="w-full h-auto sm:w-auto sm:min-h-[240px] sm:h-[84%] object-cover cursor-pointer"
-                  onClick={() => redirect(`/postcards/${postcard.id}`)}
-                />
-              </Tooltip>
-              <div className="flex items-center justify-between px-4">
-                <div className="flex flex-col py-2">
-                  {/* Username */}
-                  <Tooltip content="User profile">
-                    <p
-                      className="text-sm font-bold text-gray-500 underline cursor-pointer"
-                      onClick={() => router.push(`/users/${postcard.userId}`)}
-                    >
-                      {postcard.user.name}
-                    </p>
-                  </Tooltip>
-                  {/* title */}
-                  <p className="w-[120px] text-sm font-bold truncate">
-                    {postcard.title}
+
+        {/* <Gallery postcards={allPublicPostcards} likes={likes} handleLikePostcard={handleLikePostcard} handleDeleteLikePostcard={handleDeleteLikePostcard} /> */}
+        <Gallery
+          items={allPublicPostcards}
+          getPostcard={(p) => p}
+          renderCardContent={(postcard) => (
+            <div className="flex items-center justify-between px-2 py-2">
+              <div className="flex flex-col">
+                {/* Username */}
+                <Tooltip content="User profile">
+                  <p
+                    className="text-xs font-bold text-gray-500 underline cursor-pointer"
+                    onClick={() => router.push(`/users/${postcard.userId}`)}
+                  >
+                    {postcard.user.name}
                   </p>
-                </div>
-                <div className="flex gap-2 items-center">
-                  {/* Likes */}
-                  <Tooltip content="Like">
-                    <div className="flex gap-1 items-center">
-                      {postcard.likes &&
-                      likes.find((item) => item.postcardId === postcard.id) ? (
-                        // {postcard.Like?.userId
-                        <HeartFilledIcon
-                          color="red"
-                          className="cursor-pointer"
-                          // onClick={() => handleLikePostcard(postcard)}
-                          onClick={() => handleDeleteLikePostcard(postcard)}
-                        />
-                      ) : (
-                        <HeartIcon
-                          className="cursor-pointer"
-                          onClick={() => handleLikePostcard(postcard)}
-                        />
-                      )}
-                      <div className="">
-                        <p className="text-sm text-gray-500">
-                          {postcard.likes !== 0 ? postcard.likes : ''}
-                        </p>
-                      </div>
-                    </div>
-                  </Tooltip>
-                </div>
+                </Tooltip>
+                {/* title */}
+                <p className="w-[120px] text-sm font-bold truncate">
+                  {postcard.title}
+                </p>
               </div>
-            </Card>
-          ))}
-        </div>
+              <div className="flex gap-2 items-center">
+                {/* Likes */}
+                <Tooltip content="Like">
+                  <div className="flex gap-1 items-center">
+                    {postcard.likes &&
+                    likes.find((item) => item.postcardId === postcard.id) ? (
+                      // {postcard.Like?.userId
+                      <HeartFilledIcon
+                        color="red"
+                        className="cursor-pointer"
+                        // onClick={() => handleLikePostcard(postcard)}
+                        onClick={() => handleDeleteLikePostcard(postcard)}
+                      />
+                    ) : (
+                      <HeartIcon
+                        className="cursor-pointer"
+                        onClick={() => handleLikePostcard(postcard)}
+                      />
+                    )}
+                    <div className="">
+                      <p className="text-sm text-gray-500">
+                        {postcard.likes !== 0 ? postcard.likes : ''}
+                      </p>
+                    </div>
+                  </div>
+                </Tooltip>
+              </div>
+            </div>
+          )}
+        />
+
         {publicPostcardsCount > pageSize && (
-          <Pagination
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            numberOfPages={numberOfPages}
-          />
+          <>
+            <br />
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              numberOfPages={numberOfPages}
+            />
+          </>
         )}
       </div>
     </main>

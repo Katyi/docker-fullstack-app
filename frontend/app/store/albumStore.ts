@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { redirect } from 'next/navigation';
 
 interface AlbumState {
   albums: Album[];
@@ -39,7 +38,6 @@ const useAlbumStore = create<AlbumState>((set) => ({
       set({ albums: albums, isLoading: false, error: null });
     } catch (error: unknown) {
       set({ error: (error as Error).message, isLoading: false, albums: [] });
-      // redirect('/login');
     }
   },
   getUserAlbumCount: async (userId: string) => {
@@ -66,7 +64,6 @@ const useAlbumStore = create<AlbumState>((set) => ({
       set({ album: album, isLoading: false, error: null });
     } catch (error: unknown) {
       set({ error: (error as Error).message, isLoading: false, album: null });
-      // redirect('/login');
     }
   },
   addAlbum: async (newAlbum: NewAlbum) => {
@@ -78,7 +75,6 @@ const useAlbumStore = create<AlbumState>((set) => ({
       set({ album: album, isLoading: false, error: null });
     } catch (error: unknown) {
       set({ error: (error as Error).message, isLoading: false, albums: [] });
-      redirect('/login');
     }
   },
   updateAlbum: async (updatedAlbum: UpdateAlbum) => {

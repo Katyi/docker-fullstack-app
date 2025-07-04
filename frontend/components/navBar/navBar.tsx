@@ -10,7 +10,7 @@ import { headerMenuItems, headerMenuItems_2 } from '@/lib/constants';
 
 const NavBar = () => {
   const router = useRouter();
-  const { user, logout, isLoading, getUser } = useAuthStore();
+  const { user, logout, isLoading, checkAuth, error } = useAuthStore();
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
 
@@ -19,6 +19,10 @@ const NavBar = () => {
     await logout();
     router.push('/');
   };
+
+  // useEffect(() => {
+  //   checkAuth();
+  // }, [checkAuth]);
 
   useEffect(() => {
     const checkScreenWidth = () => {

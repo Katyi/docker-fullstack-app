@@ -21,7 +21,7 @@ import Pagination from '@/components/ui/pagination';
 
 const Albums = () => {
   const router = useRouter();
-  const { user } = useAuthStore();
+  const { user, isLoading: authLoading } = useAuthStore();
   const {
     albums,
     isLoading,
@@ -31,7 +31,7 @@ const Albums = () => {
     deleteAlbum,
     getUserAlbumCount,
   } = useAlbumStore();
-  const { postcards, getPostcards } = usePostcardStore();
+  const { postcards, getUserPostcards } = usePostcardStore();
   const [addModal, setAddModal] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [newAlbum, setNewAlbum] = useState({
@@ -57,11 +57,17 @@ const Albums = () => {
   useEffect(() => {
     if (user?.id) {
       getAlbums(user.id, (currentPage - 1) * pageSize, pageSize);
-      getPostcards(user.id, 0, 5);
+      getUserPostcards(user.id, 0, 5);
     }
-  }, [user?.id, getAlbums, getPostcards, currentPage]);
+  }, [user?.id, getAlbums, getUserPostcards, currentPage]);
 
-  return isLoading ? (
+  useEffect(() => {
+    if (!user && !authLoading) {
+      router.push('/');
+    }
+  }, [user, authLoading, router]);
+
+  return isLoading || !user ? (
     <Loader />
   ) : error ? (
     <div className="pageContainer justify-center">
@@ -93,12 +99,14 @@ const Albums = () => {
           albumsCount > 0 ? 'bg-white' : 'bg-transparent'
         }`}
       >
-        <div className="flex flex-wrap w-full gap-4 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {albums.map((album) => (
             // <div key={album.id} className="bg-white shadow rounded p-4">
             <Card
               key={album.id}
-              className="bg-gray-100 shadow-lg h-[300px] w-full sm:w-[calc((80vw-40px-16px)/2)] md:w-[calc((80vw-40px-32px)/3)] lg:w-[calc((80vw-40px-48px)/4)]"
+              className="bg-gray-100 shadow-lg h-[300px] md:h-[250px] xl:h-[300px] 
+              w-full sm:w-[calc((80vw-40px-16px)/2)] md:w-[calc((80vw-40px-32px)/3)] 
+              lg:w-[calc((80vw-40px-48px)/4)]"
             >
               {postcards.find((item) => item.albumId === album.id) ? (
                 <Image
@@ -139,13 +147,19 @@ const Albums = () => {
           ))}
         </div>
 
+        
+
         {albumsCount > pageSize && (
-          <Pagination
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            numberOfPages={numberOfPages}
-          />
+          <>
+            <br />
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              numberOfPages={numberOfPages}
+            />
+          </>
         )}
+        
       </div>
 
       {/* modal for create new user */}

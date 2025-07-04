@@ -6,7 +6,7 @@ import Modal from '@/components/modal/modal';
 import usePostcardStore from '@/app/store/postcardStore';
 import Image from 'next/image';
 import { Card } from '@radix-ui/themes';
-import { redirect, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Loader from '@/components/loader/loader';
 import useAlbumStore from '@/app/store/albumStore';
 import {
@@ -23,6 +23,7 @@ import { userRequest } from '@/lib/requestMethods';
 import Pagination from '@/components/ui/pagination';
 import { pageSize } from '@/lib/constants';
 import AddToAlbum from '@/components/addToAlbum/addToAlbum';
+import Gallery from '@/components/gallery/Gallery';
 
 const AlbumPage = () => {
   const params = useParams<{ albumId: string }>();
@@ -172,33 +173,17 @@ const AlbumPage = () => {
           postcardsInAlbumCount > 0 ? 'bg-white' : 'bg-transparent'
         }`}
       >
-        <div className="mt-5 flex flex-wrap w-[calc(80vw-40px)] gap-4 justify-between after:flex-auto mb-10">
-          {postcardsInAlbum.map((postcard) => (
-            <Card
-              key={postcard.id}
-              className="bg-gray-100 shadow-lg w-[80vw] h-fit sm:w-auto sm:h-[340px] flex-grow-0"
-            >
-              <Tooltip content="View postcard">
-                <Image
-                  src={`${postcard?.imageUrl}`}
-                  alt="postcard"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  className="w-full h-auto sm:min-h-[240px] sm:h-[80%] object-cover cursor-pointer"
-                  onClick={() => redirect(`/postcards/${postcard.id}`)}
-                />
-              </Tooltip>
-              {/* title, delete and likes */}
+        <Gallery
+          items={postcardsInAlbum}
+          getPostcard={(postcard) => postcard}
+          renderCardContent={(postcard) => {
+            return (
               <div className="flex flex-col px-4 py-2 gap-1">
-                {/* title and description */}
                 <h2 className="text-sm font-bold align-text-top">
                   {postcard.title}
                 </h2>
 
-                {/* delete and likes */}
                 <div className="flex gap-1 items-center justify-between">
-                  {/* Add to album and Delete postcard */}
                   <div className="flex items-center gap-0.5">
                     <Tooltip content="Add to album">
                       <button
@@ -241,23 +226,25 @@ const AlbumPage = () => {
                         />
                       )}
                       <p className="text-sm text-gray-500">
-                        {/* {postcard.likes} */}
                         {postcard.likes !== 0 ? postcard.likes : ''}
                       </p>
                     </div>
                   </Tooltip>
                 </div>
               </div>
-            </Card>
-          ))}
-        </div>
+            );
+          }}
+        />
 
         {postcardsInAlbumCount > pageSize && (
-          <Pagination
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            numberOfPages={numberOfPages}
-          />
+          <>
+            <br />
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              numberOfPages={numberOfPages}
+            />
+          </>
         )}
       </div>
 

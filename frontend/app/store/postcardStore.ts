@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { redirect } from 'next/navigation';
+import postcardService from '@/lib/services/postcardService';
 
 interface PostcardState {
   postcards: Postcard[];
@@ -14,7 +14,11 @@ interface PostcardState {
   postcard: Postcard | null;
   isLoading: boolean;
   error: string | null;
-  getPostcards: (userId: string, skip: number, take: number) => Promise<void>;
+  getUserPostcards: (
+    userId: string,
+    skip: number,
+    take: number
+  ) => Promise<void>;
   getUserPostcardsCount: (userId: string) => Promise<void>;
   getAllPublicPostcards: (skip: number, take: number) => Promise<void>;
   getAllPublicPostcardsCount: () => Promise<void>;
@@ -52,31 +56,37 @@ const usePostcardStore = create<PostcardState>((set) => ({
   isLoading: false,
   error: null,
   // Get postcards of current user
-  getPostcards: async (userId: string, skip: number, take: number) => {
+  getUserPostcards: async (userId: string, skip: number, take: number) => {
     const params = {
       skip: skip,
       take: take,
     };
     set({ isLoading: true, error: null });
     try {
-      // Simulate fetching data (replace with your actual API call)
-      const response = await axios.get(`/postcards/user/${userId}`, {
-        params,
-        withCredentials: true,
-      });
-      const postcards = await response.data;
+      const postcards = await postcardService.getUserPostcards(
+        userId,
+        skip,
+        take
+      );
+      // const response = await axios.get(`/postcards/user/${userId}`, {
+      //   params,
+      //   withCredentials: true,
+      // });
+      // const postcards = await response.data;
       set({ postcards: postcards, isLoading: false });
     } catch (error: unknown) {
       set({ error: (error as Error).message, isLoading: false, postcards: [] });
-      // redirect('/login');
     }
   },
   // Get count of postcards of current user
   getUserPostcardsCount: async (userId: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`/postcards/count/${userId}`);
-      const postcardsCount = await response.data;
+      // const response = await axios.get(`/postcards/count/${userId}`);
+      // const postcardsCount = await response.data;
+      const postcardsCount = await postcardService.getUserPostcardsCount(
+        userId
+      );
       set({ postcardsCount: postcardsCount, isLoading: false, error: null });
     } catch (error: unknown) {
       set({
@@ -94,9 +104,12 @@ const usePostcardStore = create<PostcardState>((set) => ({
     };
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get('/postcards/public', { params });
-
-      const allPublicPostcards = await response.data;
+      // const response = await axios.get('/postcards/public', { params });
+      // const allPublicPostcards = await response.data;
+      const allPublicPostcards = await postcardService.getAllPublicPostcards(
+        skip,
+        take
+      );
       set({
         allPublicPostcards: allPublicPostcards,
         isLoading: false,
@@ -110,8 +123,10 @@ const usePostcardStore = create<PostcardState>((set) => ({
   getAllPublicPostcardsCount: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get('/postcards/publicCount');
-      const publicPostcardsCount = await response.data;
+      // const response = await axios.get('/postcards/publicCount');
+      // const publicPostcardsCount = await response.data;
+      const publicPostcardsCount =
+        await postcardService.getAllPublicPostcardsCount();
       set({
         publicPostcardsCount: publicPostcardsCount,
         isLoading: false,
@@ -132,10 +147,15 @@ const usePostcardStore = create<PostcardState>((set) => ({
       take: take,
     };
     try {
-      const response = await axios.get(`/postcards/public/${userId}`, {
-        params,
-      });
-      const publicPostcards = await response.data;
+      // const response = await axios.get(`/postcards/public/${userId}`, {
+      //   params,
+      // });
+      // const publicPostcards = await response.data;
+      const publicPostcards = await postcardService.getPublicPostcards(
+        userId,
+        skip,
+        take
+      );
       set({ publicPostcards: publicPostcards, isLoading: false, error: null });
     } catch (error: unknown) {
       set({ error: (error as Error).message, isLoading: false, postcards: [] });
@@ -145,8 +165,10 @@ const usePostcardStore = create<PostcardState>((set) => ({
   getPublicPostcardsCount: async (userId: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`/postcards/count/public/${userId}`);
-      const userPublicPostcardsCount = await response.data;
+      // const response = await axios.get(`/postcards/count/public/${userId}`);
+      // const userPublicPostcardsCount = await response.data;
+      const userPublicPostcardsCount =
+        await postcardService.getPublicPostcardsCount(userId);
       set({
         userPublicPostcardsCount: userPublicPostcardsCount,
         isLoading: false,
@@ -167,11 +189,16 @@ const usePostcardStore = create<PostcardState>((set) => ({
       take: take,
     };
     try {
-      const response = await axios.get(`/postcards/inalbum/${albumId}`, {
-        params,
-        withCredentials: true,
-      });
-      const postcardsInAlbum = await response.data;
+      // const response = await axios.get(`/postcards/inalbum/${albumId}`, {
+      //   params,
+      //   withCredentials: true,
+      // });
+      // const postcardsInAlbum = await response.data;
+      const postcardsInAlbum = await postcardService.getPostcardByAlbumId(
+        albumId,
+        skip,
+        take
+      );
       set({
         postcardsInAlbum: postcardsInAlbum,
         isLoading: false,
@@ -185,10 +212,12 @@ const usePostcardStore = create<PostcardState>((set) => ({
   getPostcardByAlbumIdCount: async (albumId: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`/postcards/inalbum/count/${albumId}`, {
-        withCredentials: true,
-      });
-      const postcardsInAlbumCount = await response.data;
+      // const response = await axios.get(`/postcards/inalbum/count/${albumId}`, {
+      //   withCredentials: true,
+      // });
+      // const postcardsInAlbumCount = await response.data;
+      const postcardsInAlbumCount =
+        await postcardService.getPostcardByAlbumIdCount(albumId);
       set({
         postcardsInAlbumCount: postcardsInAlbumCount,
         isLoading: false,
@@ -205,36 +234,33 @@ const usePostcardStore = create<PostcardState>((set) => ({
 
   getPostcard: async (id: string) => {
     try {
-      const response = await axios.get(`/postcards/${id}`, {
-        withCredentials: true,
-      });
-      const postcard = await response.data;
+      const postcard = await postcardService.getPostcard(id);
       set({ postcard: postcard, isLoading: false, error: null });
     } catch (error: unknown) {
       set({ error: (error as Error).message, isLoading: false, postcards: [] });
-      redirect('/login');
     }
   },
   addPostcard: async (newPostcard: NewPostcard) => {
     try {
-      const response = await axios.post('/postcards', newPostcard, {
-        withCredentials: true,
-      });
-      const postcard = await response.data;
+      // const response = await axios.post('/postcards', newPostcard, {
+      //   withCredentials: true,
+      // });
+      // const postcard = await response.data;
+      const postcard = await postcardService.addPostcard(newPostcard);
       set({ postcard: postcard, isLoading: false, error: null });
     } catch (error: unknown) {
       set({ error: (error as Error).message, isLoading: false, postcards: [] });
-      redirect('/login');
     }
   },
   updatePostcard: async (updatePostcard: Postcard) => {
     try {
-      const response = await axios.put(
-        `/postcards/${updatePostcard.id}`,
-        updatePostcard,
-        { withCredentials: true }
-      );
-      const updatedData = await response.data;
+      // const response = await axios.put(
+      //   `/postcards/${updatePostcard.id}`,
+      //   updatePostcard,
+      //   { withCredentials: true }
+      // );
+      // const updatedData = await response.data;
+      const updatedData = await postcardService.updatePostcard(updatePostcard);
       set((state) => ({
         postcards: state.postcards.map((postcard) =>
           postcard.id === updatedData.id ? updatedData : postcard
@@ -246,9 +272,10 @@ const usePostcardStore = create<PostcardState>((set) => ({
   },
   deletePostcard: async (postcardId: string) => {
     try {
-      await axios.delete(`/postcards/${postcardId}`, {
-        withCredentials: true,
-      });
+      // await axios.delete(`/postcards/${postcardId}`, {
+      //   withCredentials: true,
+      // });
+      await postcardService.deletePostcard(postcardId);
       set((state) => ({
         postcards: state.postcards.filter(
           (postcard) => postcard.id !== postcardId
@@ -258,7 +285,6 @@ const usePostcardStore = create<PostcardState>((set) => ({
       }));
     } catch (error: unknown) {
       set({ error: (error as Error).message, isLoading: false, postcards: [] });
-      // redirect('/login');
     }
   },
 }));

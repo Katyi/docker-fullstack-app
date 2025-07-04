@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const checkAuth = require('../utils/checkAuth');
 
 const { PrismaClient } = require('@prisma/client');
-
 const prisma = new PrismaClient();
 
 // Register route
@@ -49,7 +49,7 @@ router.post('/register', async (req, res) => {
     });
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user.email }, process.env.JWT_SECRET);
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
 
     // Set cookies
     res.cookie('token', token, {
@@ -66,6 +66,7 @@ router.post('/register', async (req, res) => {
       user,
     });
   } catch (error) {
+    console.error('Registration error:', error);
     res.status(500).json({ message: error.message });
   }
 });
@@ -95,7 +96,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user.email }, process.env.JWT_SECRET);
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
 
     // Set cookies
     res.cookie('token', token, {
@@ -112,6 +113,7 @@ router.post('/login', async (req, res) => {
       user,
     });
   } catch (error) {
+    console.error('Login error:', error); // Логирование ошибки на сервере
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
@@ -119,6 +121,33 @@ router.post('/login', async (req, res) => {
 // Logout route
 router.get('/logout', (req, res) => {
   res.status(200).clearCookie('token').json('Logout successful');
+});
+
+router.get('/me', checkAuth, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        country: true,
+        city: true,
+        birthday: true,
+        imageUrl: true,
+        about: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 module.exports = router;

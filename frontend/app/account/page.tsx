@@ -1,16 +1,22 @@
 'use client';
 
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import useAuthStore from '../store/authStore';
+import useUserStore from '../store/userStore';
+import { userRequest } from '@/lib/requestMethods';
 import { formatDay } from '@/lib/formating';
+import Loader from '@/components/loader/loader';
 import SelectComponent from '@/components/ui/select';
 import { userSchema } from '@/lib/schema';
 import { UploadIcon } from '@radix-ui/react-icons';
-import { userRequest } from '@/lib/requestMethods';
+import Image from 'next/image';
 
 const Account = () => {
-  const { user, getUser, updateUser } = useAuthStore();
+  const router = useRouter();
+  const { user: authUser, isLoading: authLoading, error } = useAuthStore();
+  const { user, getUser, updateUser } = useUserStore();
+  const [hydrated, setHydrated] = useState(false);
 
   const [currentUser, setCurrentUser] = useState<UpdUser>(
     user || ({} as UpdUser)
@@ -107,14 +113,37 @@ const Account = () => {
   };
 
   useEffect(() => {
-    if (user?.id) getUser(user.id);
-  }, [getUser, user?.id]);
+    if (authUser?.id) getUser(authUser.id);
+  }, [getUser, authUser?.id]);
 
   useEffect(() => {
     if (user?.id) setCurrentUser(user);
   }, [user]);
 
-  return (
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated && !authLoading && !authUser) {
+      router.push('/');
+    }
+  }, [hydrated, authUser, authLoading, router]);
+
+  if (!hydrated || authLoading) return <Loader />;
+  if (!authUser) return <Loader />;
+
+  if (error) {
+    return (
+      <div className="pageContainer justify-center">
+        <p className="text-red-500 font-bold">Error loading users: {error}</p>
+      </div>
+    );
+  }
+
+  return authLoading ? (
+    <Loader />
+  ) : (
     <main className="pageContainer bg-white">
       <div className="flex flex-col md:flex-row md:justify-between gap-4 w-full p-5 md:p-6">
         {/* USER IMAGE */}

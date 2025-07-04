@@ -54,6 +54,8 @@ model Postcard {
   tag         String?
   public      Boolean?
   likes       Int?
+  width       Int?
+  height      Int?
 
   albumId String?
   album   Album?  @relation(fields: [albumId], references: [id])

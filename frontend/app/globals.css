@@ -195,6 +195,18 @@
   z-index: 10;
 }
 
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+  gap: 10px;
+
+  width: 100%;
+  /* height: 4em; */
+
+}
+
+
 @media only screen and (min-width: 768px) {
   .pageContainer {
     min-height: calc(100vh - 155px - 90px);

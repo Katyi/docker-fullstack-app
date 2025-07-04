@@ -55,6 +55,8 @@ interface Postcard {
   createdAt?: string;
   user?: User;
   Like?: Like;
+  width?: number;
+  height?: number;
 }
 interface NewPostcard {
   title: string;
@@ -63,6 +65,8 @@ interface NewPostcard {
   albumId?: string | null;
   userId?: string;
   public: boolean;
+  width?: number;
+  height?: number;
 }
 
 interface UserPageProps {
@@ -128,3 +132,11 @@ interface Countries {
   image: string;
   dial_code: string;
 }
+
+type JustifiedBox = {
+  src: string;
+  alt?: string;
+  width: number;
+  height: number;
+  originalIndex: number;
+};

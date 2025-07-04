@@ -2,16 +2,18 @@
 
 import { ChangeEvent, useState } from 'react';
 import { userSchema } from '@/lib/schema';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import useAuthStore from '@/app/store/authStore';
 import SelectComponent from '@/components/ui/select';
 import { UploadIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import { userRequest } from '@/lib/requestMethods';
+import Loader from '@/components/loader/loader';
 
 const SignUp = () => {
-  const { error, register, isLoggedIn } = useAuthStore();
+  const router = useRouter();
+  const { error, register, isLoggedIn, isLoading } = useAuthStore();
   const [newUser, setNewUser] = useState<NewUser>({
     name: '',
     email: '',
@@ -20,6 +22,10 @@ const SignUp = () => {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [file, setFile] = useState<FormData | null>(null);
+
+  if (isLoggedIn) {
+    router.push('/');
+  }
 
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -80,11 +86,17 @@ const SignUp = () => {
     }
   };
 
-  if (isLoggedIn) {
-    redirect('/');
+  if (error) {
+    return (
+      <div className="pageContainer justify-center">
+        <p className="text-red-500 font-bold">Error: {error}</p>
+      </div>
+    );
   }
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <main className="pageContainer justify-center">
       <form
         onSubmit={handleSubmit}

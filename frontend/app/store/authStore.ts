@@ -1,10 +1,10 @@
-import axios, { AxiosError } from 'axios';
+import authService from '@/lib/services/authService';
+import { AxiosError } from 'axios';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface AuthState {
   user: User | null;
-  users: User[];
   error: string | null;
   isLoggedIn: boolean;
   isLoading: boolean;
@@ -20,31 +20,20 @@ interface AuthState {
     password: string;
   }) => Promise<void>;
   logout: () => Promise<void>;
-  getUsers: () => Promise<void>;
-  getUser: (id: string) => Promise<void>;
-  addUser: (newUser: NewUser) => Promise<void>;
-  updateUser: (updatedUser: UpdUser) => Promise<void>;
-  deleteUser: (userId: string) => Promise<void>;
+  checkAuth: () => Promise<void>;
 }
-
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
-// axios.defaults.baseURL = 'http://212.113.120.58:4000';
 
 const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      users: [],
       error: null,
       isLoggedIn: false,
       isLoading: false,
       login: async (credentials) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await axios.post('/auth/login', credentials, {
-            withCredentials: true,
-          });
-          const { user } = response.data;
+          const { user } = await authService.login(credentials);
           set({ user, isLoggedIn: true, isLoading: false });
         } catch (err) {
           const error = err as AxiosError<{ message: string }>;
@@ -60,10 +49,7 @@ const useAuthStore = create<AuthState>()(
       register: async (credentials) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await axios.post('/auth/register', credentials, {
-            withCredentials: true,
-          });
-          const { user } = response.data;
+          const { user } = await authService.register(credentials);
           set({ user, isLoading: false, isLoggedIn: true });
         } catch (err) {
           const error = err as AxiosError<{ message: string }>;
@@ -80,7 +66,7 @@ const useAuthStore = create<AuthState>()(
       logout: async () => {
         set({ isLoading: true });
         try {
-          await axios.get('/auth/logout', { withCredentials: true });
+          await authService.logout();
         } catch (err) {
           console.error('Logout error:', err);
         } finally {
@@ -92,68 +78,28 @@ const useAuthStore = create<AuthState>()(
           });
         }
       },
-      getUsers: async () => {
+      checkAuth: async () => {
         set({ isLoading: true, error: null });
         try {
-          const response = await axios.get(`/users`);
-          const users = await response.data;
-          set({ users, isLoading: false, error: null });
-        } catch (error: unknown) {
-          set({ error: (error as Error).message, isLoading: false, users: [] });
-        }
-      },
-      getUser: async (id: string) => {
-        set({ isLoading: true, error: null });
-        try {
-          const response = await axios.get(`users/${id}`, {
-            withCredentials: true,
-          });
-          const user = await response.data;
-          set({ user: user, isLoading: false, error: null });
+          const { user } = await authService.checkAuth();
+          set({ user, isLoggedIn: true, isLoading: false });
         } catch (error) {
-          set({
-            error: (error as Error).message,
-            isLoading: false,
-            user: null,
-          });
-        }
-      },
-      addUser: async (newUser: NewUser) => {
-        set({ isLoading: true, error: null });
-        try {
-          const response = await axios.post('/users', newUser);
-          const addedUser = await response.data;
-          set((state) => ({ users: [...state.users, addedUser] }));
-        } catch (error: unknown) {
-          set({ error: (error as Error).message });
-        }
-      },
-      updateUser: async (updatedUser: UpdUser) => {
-        set({ isLoading: true, error: null });
-        try {
-          const response = await axios.put(
-            `/users/${updatedUser.id}`,
-            updatedUser
-          );
-          const updatedData = await response.data;
-          set((state) => ({
-            users: state.users.map((user) =>
-              user.id === updatedData.id ? updatedData : user
-            ),
-          }));
-        } catch (error: unknown) {
-          set({ error: (error as Error).message });
-        }
-      },
-      deleteUser: async (userId: string) => {
-        set({ isLoading: true, error: null });
-        try {
-          await axios.delete(`/users/${userId}`);
-          set((state) => ({
-            users: state.users.filter((user) => user.id !== userId),
-          }));
-        } catch (error: unknown) {
-          set({ error: (error as Error).message });
+          const axiosError = error as AxiosError<{ message: string }>;
+          if (axiosError.response?.status === 401) {
+            set({
+              user: null,
+              isLoggedIn: false,
+              isLoading: false,
+              error: null,
+            });
+          } else {
+            set({
+              error: axiosError.message,
+              user: null,
+              isLoggedIn: false,
+              isLoading: false,
+            });
+          }
         }
       },
     }),

@@ -2,12 +2,20 @@
 
 import { useState } from 'react';
 import { loginSchema } from '@/lib/schema';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import useAuthStore from '@/app/store/authStore';
 import Link from 'next/link';
+import Loader from '@/components/loader/loader';
 
 const Login = () => {
-  const { error, login, isLoggedIn } = useAuthStore();
+  const router = useRouter();
+  const {
+    user: authUser,
+    error,
+    login,
+    isLoggedIn,
+    isLoading,
+  } = useAuthStore();
   const [user, setUser] = useState<NewUser>({
     name: '',
     email: '',
@@ -15,8 +23,8 @@ const Login = () => {
   });
   const [errors, setErrors] = useState<ValidationErrors>({});
 
-  if (isLoggedIn) {
-    redirect('/');
+  if (isLoggedIn && authUser) {
+    router.push('/');
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,7 +44,17 @@ const Login = () => {
     }
   };
 
-  return (
+  if (error) {
+    return (
+      <div className="pageContainer justify-center">
+        <p className="text-red-500 font-bold">Error: {error}</p>
+      </div>
+    );
+  }
+
+  return isLoading ? (
+    <Loader />
+  ) : (
     <main className="pageContainer justify-center">
       <form
         onSubmit={handleSubmit}

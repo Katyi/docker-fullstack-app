@@ -7,7 +7,7 @@ const UserPage = async (props: UserPageProps) => {
   const { userId } = await props.params;
   const user = await getUser(userId);
 
-  if (!user) {
+  if (!user.id) {
     return (
       <div className="pageContainer justify-center">
         <p className="text-red-500 font-bold text-lg">User ID not found</p>

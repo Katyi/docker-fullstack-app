@@ -40,7 +40,6 @@ const useLikeStore = create<LikeState>((set) => ({
       set({ likes: likes, isLoading: false, error: null });
     } catch (error: unknown) {
       set({ error: (error as Error).message, isLoading: false, likes: [] });
-      // redirect('/login');
     }
   },
   getUserLikesCount: async (userId: string) => {
@@ -88,7 +87,6 @@ const useLikeStore = create<LikeState>((set) => ({
       set({ like: like, isLoading: false, error: null });
     } catch (error: unknown) {
       set({ error: (error as Error).message, isLoading: false, likes: [] });
-      // redirect('/login');
     }
   },
   deleteLike: async (id: string) => {

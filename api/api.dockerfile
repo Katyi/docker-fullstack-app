@@ -16,4 +16,6 @@ COPY api/. .
 
 EXPOSE 4000
 
-CMD ["node", "index.js"]
+# CMD ["node", "index.js"]
+# CMD npx prisma migrate deploy && node index.js
+CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node index.js"]

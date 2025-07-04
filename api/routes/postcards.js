@@ -198,6 +198,8 @@ router.post('/', checkAuth, async (req, res) => {
         public: req.body.public,
         albumId: req.body.albumId,
         userId: req.body.userId,
+        width: req.body.width,
+        height: req.body.height,
       },
     });
 
