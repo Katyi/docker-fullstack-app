@@ -17,6 +17,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/media/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'postcardfolio.ru',
+        port: '',
+        pathname: '/media/**',
+      },
     ],
   },
 };
