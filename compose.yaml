@@ -31,10 +31,9 @@ services:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - JWT_SECRET=${JWT_SECRET}
       - NODE_ENV=${NODE_ENV}
-      - IMAGE_UPLOAD_PATH=${IMAGE_UPLOAD_PATH}
     restart: always
     volumes:
-      - media_data:/var/www/fileUpload/uploaded_files/media
+      - ./media:/var/www/fileUpload/uploaded_files/media
   db:
     container_name: db
     image: postgres:12
@@ -50,4 +49,3 @@ services:
 
 volumes:
   pgdata: {}
-  media_data: {}
