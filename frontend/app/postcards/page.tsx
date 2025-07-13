@@ -55,6 +55,7 @@ const Postcards = () => {
 
   const deleteImage = async (image: string) => {
     const fileName = image.slice(28);
+    console.log(fileName)
 
     try {
       await userRequest.delete('/upload/image-delete', {

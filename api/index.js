@@ -3,19 +3,21 @@ require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const app = express();
 const cors = require('cors');
+const path = require('path');
 const userRoutes = require('./routes/users');
 const postcardRoutes = require('./routes/postcards');
 const likeRoutes = require('./routes/likes');
 const albumRoutes = require('./routes/albums');
 const authRoutes = require('./routes/auth');
+const imageRoutes = require('./routes/images');
 
 const { PrismaClient } = require('@prisma/client');
-
 const prisma = new PrismaClient();
 
 // Middleware
 app.use(cookieParser());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //cors
 app.use(
@@ -30,13 +32,21 @@ app.use(
   })
 ); // Allow CORS from your frontend
 
-// app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Replace with your frontend's origin if different
-//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-//   res.setHeader('Access-Control-Allow-Headers', '*'); // Add 'Authorization'
-//   res.setHeader('Access-Control-Allow-Credentials', 'true');
-//   next();
-// });
+// --------------------------------------------------------------------
+// НОВОЕ: Настройка для отдачи статических файлов (изображений)
+// Убедитесь, что путь соответствует imageUploadPath из routes/images.js
+// и что папка 'uploads' действительно находится в корне вашего API проекта.
+// Если imageUploadPath = '/var/www/fileUpload/uploaded_files/media', то здесь нужно указать его.
+let staticFilesPath;
+if (process.env.NODE_ENV === 'production') {
+  staticFilesPath = '/var/www/fileUpload/uploaded_files/media';
+} else {
+  staticFilesPath = path.join(__dirname, 'uploads'); // Папка 'uploads' в корне API
+}
+
+app.use('/media', express.static(staticFilesPath)); // <-- Отдаем файлы по URL /media
+// Теперь изображения будут доступны по адресу: http://yourdomain.com/media/имя_файла.jpg
+// --------------------------------------------------------------------
 
 // Test API
 app.get('/test', (req, res) => {
@@ -53,6 +63,7 @@ app.use('/auth', authRoutes);
 app.use('/postcards', postcardRoutes);
 app.use('/likes', likeRoutes);
 app.use('/albums', albumRoutes);
+app.use('/upload', imageRoutes);
 
 // Start server
 const PORT = process.env.PORT || 4000;

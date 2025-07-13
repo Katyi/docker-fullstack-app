@@ -2,7 +2,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 import { postcardSchema } from '@/lib/schema';
 import usePostcardStore from '@/app/store/postcardStore';
 import { CrossCircledIcon, UploadIcon } from '@radix-ui/react-icons';
-import { userRequest } from '../../lib/requestMethods';
+import { BASE_URL, userRequest } from '../../lib/requestMethods';
 import Image from 'next/image';
 import { Checkbox } from '@radix-ui/themes';
 import { pageSize } from '@/lib/constants';
@@ -51,50 +51,38 @@ const AddPostcard = ({
         setImageUrls(newImageUrls);
       }
 
-      const forNameOfFile = `${Date.now()}_${files[0].name}`;
+      // const forNameOfFile = `${Date.now()}_${files[0].name}`;
       const formData = new FormData();
-      formData.append('file', files[0], forNameOfFile);
+      formData.append('file', files[0], files[0].name);
       if (setFile) {
         setFile(formData);
       }
-      setNewPostcard({
-        ...newPostcard,
-        imageUrl: `http://212.113.120.58/media/${forNameOfFile}`,
-      });
-    }
-  };
-
-  const fetchImage = async () => {
-    try {
-      const response = await userRequest.post('/upload/image-upload', file);
-      const { width, height } = response.data;
-      setNewPostcard(prev => ({
-        ...prev,
-        width,
-        height,
-      }));
-    } catch (error) {
-      console.log(error);
+      // setNewPostcard({
+      //   ...newPostcard,
+      //   // imageUrl: `http://212.113.120.58/media/${forNameOfFile}`,
+      //   // imageUrl: `http://localhost:4000/media/${forNameOfFile}`,
+      //   // http://localhost:4000/media/1752139305418_IMG_0032.jpg
+      // });
     }
   };
 
   //create postcard
   const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let width, height;
+    let width, height, imageUrl;
     if (file) {
       // await fetchImage();
       const response = await userRequest.post('/upload/image-upload', file);
       width = response.data.width;
       height = response.data.height;
+      imageUrl = response.data.imageUrl;
     }
-
-    
 
     const postcardToSend = {
       ...newPostcard,
       width,
       height,
+      imageUrl,
     };
 
     const result = postcardSchema.safeParse(postcardToSend);

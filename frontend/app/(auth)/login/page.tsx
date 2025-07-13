@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { loginSchema } from '@/lib/schema';
 import { useRouter } from 'next/navigation';
 import useAuthStore from '@/app/store/authStore';
@@ -23,9 +23,11 @@ const Login = () => {
   });
   const [errors, setErrors] = useState<ValidationErrors>({});
 
-  if (isLoggedIn && authUser) {
-    router.push('/');
-  }
+  useEffect(() => {
+    if (isLoggedIn && authUser) {
+      router.push('/');
+    }
+  }, [isLoggedIn, authUser, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

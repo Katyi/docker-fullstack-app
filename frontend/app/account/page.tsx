@@ -35,22 +35,24 @@ const Account = () => {
         setImageUrl(newImageUrl);
       }
 
-      const forNameOfFile = `${Date.now()}_${files[0].name}`;
+      // const forNameOfFile = `${Date.now()}_${files[0].name}`;
       const formData = new FormData();
-      formData.append('file', files[0], forNameOfFile);
+      // formData.append('file', files[0], forNameOfFile);
+      formData.append('file', files[0], files[0].name);
       if (setFile) {
         setFile(formData);
       }
-      setCurrentUser({
-        ...currentUser,
-        imageUrl: `http://212.113.120.58/media/${forNameOfFile}`,
-      });
+      // setCurrentUser({
+      //   ...currentUser,
+      //   imageUrl: `http://212.113.120.58/media/${forNameOfFile}`,
+      // });
     }
   };
 
   const deleteImage = async (image: string) => {
     if (image) {
       const fileName = image.slice(28);
+      console.log(fileName);
       try {
         await userRequest.delete('/upload/image-delete', {
           data: { fileName: fileName },
@@ -76,8 +78,9 @@ const Account = () => {
             data: { fileName: fileName },
           });
         }
-        await userRequest.post('/upload/image-upload', file);
-        await updateUser(currentUser);
+        const response = await userRequest.post('/upload/image-upload', file);
+        const imageUrl = response.data.imageUrl;
+        await updateUser({ ...currentUser, imageUrl });
         setImageUrl([]);
         if (user?.id) await getUser(user.id);
       } catch (error) {

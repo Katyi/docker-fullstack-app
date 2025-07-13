@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { userSchema } from '@/lib/schema';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -23,9 +23,11 @@ const SignUp = () => {
   const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [file, setFile] = useState<FormData | null>(null);
 
-  if (isLoggedIn) {
-    router.push('/');
-  }
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push('/');
+    }
+  }, [isLoggedIn, router]);
 
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -37,31 +39,33 @@ const SignUp = () => {
         setImageUrl(newImageUrl);
       }
 
-      const forNameOfFile = `${Date.now()}_${files[0].name}`;
       const formData = new FormData();
-      formData.append('file', files[0], forNameOfFile);
+      formData.append('file', files[0], files[0].name);
       if (setFile) {
         setFile(formData);
       }
-      setNewUser({
-        ...newUser,
-        imageUrl: `http://212.113.120.58/media/${forNameOfFile}`,
-      });
     }
   };
 
-  const fetchImage = async () => {
-    try {
-      await userRequest.post('/upload/image-upload', file);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const fetchImage = async () => {
+  //   try {
+  //     const response = await userRequest.post('/upload/image-upload', file);
+  //     const imageUrl = response.data.imageUrl;
+  //     await setNewUser({
+  //       ...newUser,
+  //       imageUrl,
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let imageUrl;
     if (file) {
-      await fetchImage();
+      const response = await userRequest.post('/upload/image-upload', file);
+      imageUrl = response.data.imageUrl;
     }
 
     const result = userSchema.safeParse(newUser);
@@ -72,10 +76,11 @@ const SignUp = () => {
         if (newUser.birthday) {
           await register({
             ...newUser,
+            imageUrl: imageUrl,
             birthday: new Date(newUser.birthday!).toISOString(),
           });
         } else {
-          await register(newUser);
+          await register({...newUser, imageUrl});
         }
       } catch (error) {
         console.log(error);
