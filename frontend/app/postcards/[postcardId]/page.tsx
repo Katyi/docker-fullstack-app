@@ -1,5 +1,6 @@
 import { getAlbum, getPostcard } from '@/lib/actions';
 import { formatDay } from '@/lib/formating';
+import { BASE_URL } from '@/lib/requestMethods';
 import Image from 'next/image';
 
 const PostcardPage = async (props: PostcardPageProps) => {
@@ -18,7 +19,7 @@ const PostcardPage = async (props: PostcardPageProps) => {
     <main className="pageContainer">
       <div className="mt-6 flex flex-col lg:flex-row lg:justify-around bg-white w-full lg:p-6">
         <Image
-          src={postcard.imageUrl}
+          src={`${BASE_URL}${postcard.imageUrl}`}
           alt="postcard"
           priority={true}
           width={0}

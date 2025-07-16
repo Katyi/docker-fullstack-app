@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import DropdownMenuDemo from '../ui/dropdown-menu';
 import { headerMenuItems, headerMenuItems_2 } from '@/lib/constants';
+import { BASE_URL } from '@/lib/requestMethods';
 
 const NavBar = () => {
   const router = useRouter();
@@ -91,10 +92,14 @@ const NavBar = () => {
             />
             <Link href={'/account'} className="p-1 bg-gray-100 hidden md:block">
               <Image
-                src={user?.imageUrl ? user.imageUrl : '/user.png'}
+                src={
+                  user.imageUrl ? `${BASE_URL}${user?.imageUrl}` : '/user.png'
+                }
                 alt="avatar"
                 width={58}
                 height={58}
+                // style={{ width: '58px', height: '58px' }}
+                className="cursor-pointer object-cover"
               />
             </Link>
           </div>

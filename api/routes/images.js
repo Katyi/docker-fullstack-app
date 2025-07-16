@@ -61,12 +61,15 @@ router.post('/image-upload', upload.single('file'), (req, res) => {
     // то sizeOf(fileBuffer) будет достаточно.
     // Если у вас TypeScript или ES Modules, то sizeOf.default может быть нужен.
     // В чистом Node.js CommonJS:
-    const dimensions = sizeOf.default(fs.readFileSync(filePath));
+    // const dimensions = sizeOf.default(fs.readFileSync(filePath));
+    const fileBuffer = fs.readFileSync(filePath);
+    const dimensions = sizeOf.default(fileBuffer);
 
     // URL для доступа к изображению через статический сервер Express
     // Предполагаем, что вы настроите Express для отдачи файлов из imageUploadPath по пути '/media'
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
-    const imageUrl = `${baseUrl}/media/${fileName}`;
+    // const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+    // const imageUrl = `${baseUrl}/media/${fileName}`;
+    const imageUrl = `/media/${fileName}`;
 
     res.status(200).json({
       message: `Файл успешно загружен: ${fileName}`,

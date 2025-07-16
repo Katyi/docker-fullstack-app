@@ -72,7 +72,7 @@ const AddPostcard = ({
     let width, height, imageUrl;
     if (file) {
       // await fetchImage();
-      const response = await userRequest.post('/upload/image-upload', file);
+      const response = await userRequest.post('/api/upload/image-upload', file);
       width = response.data.width;
       height = response.data.height;
       imageUrl = response.data.imageUrl;

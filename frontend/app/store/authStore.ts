@@ -21,6 +21,7 @@ interface AuthState {
   }) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  setUser: (user: User) => void;
 }
 
 const useAuthStore = create<AuthState>()(
@@ -102,10 +103,9 @@ const useAuthStore = create<AuthState>()(
           }
         }
       },
+      setUser: (user: User) => set({ user }),
     }),
-    {
-      name: 'userLoginStatus',
-    }
+    { name: 'userLoginStatus' }
   )
 );
 

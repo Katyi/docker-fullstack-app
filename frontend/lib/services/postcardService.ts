@@ -6,7 +6,7 @@ const postcardService = {
   getUserPostcards: async (userId: string, skip: number, take: number) => {
     try {
       const params = { skip, take };
-      const response = await axios.get(`/postcards/user/${userId}`, {
+      const response = await axios.get(`/api/postcards/user/${userId}`, {
         params,
         withCredentials: true,
       });
@@ -18,7 +18,7 @@ const postcardService = {
 
   getUserPostcardsCount: async (userId: string) => {
     try {
-      const response = await axios.get(`/postcards/count/${userId}`);
+      const response = await axios.get(`/api/postcards/count/${userId}`);
       return response.data;
     } catch (error) {
       throw error;
@@ -28,7 +28,7 @@ const postcardService = {
   getAllPublicPostcards: async (skip: number, take: number) => {
     try {
       const params = { skip, take };
-      const response = await axios.get('/postcards/public', { params });
+      const response = await axios.get('/api/postcards/public', { params });
       return response.data;
     } catch (error) {
       throw error;
@@ -37,7 +37,7 @@ const postcardService = {
 
   getAllPublicPostcardsCount: async () => {
     try {
-      const response = await axios.get('/postcards/publicCount');
+      const response = await axios.get('/api/postcards/publicCount');
       return response.data;
     } catch (error) {
       throw error;
@@ -47,7 +47,7 @@ const postcardService = {
   getPublicPostcards: async (userId: string, skip: number, take: number) => {
     try {
       const params = { skip, take };
-      const response = await axios.get(`/postcards/public/${userId}`, {
+      const response = await axios.get(`/api/postcards/public/${userId}`, {
         params,
       });
       return response.data;
@@ -58,7 +58,7 @@ const postcardService = {
 
   getPublicPostcardsCount: async (userId: string) => {
     try {
-      const response = await axios.get(`/postcards/count/public/${userId}`);
+      const response = await axios.get(`/api/postcards/count/public/${userId}`);
       return response.data;
     } catch (error) {
       throw error;
@@ -68,7 +68,7 @@ const postcardService = {
   getPostcardByAlbumId: async (albumId: string, skip: number, take: number) => {
     try {
       const params = { skip, take };
-      const response = await axios.get(`/postcards/inalbum/${albumId}`, {
+      const response = await axios.get(`/api/postcards/inalbum/${albumId}`, {
         params,
         withCredentials: true,
       });
@@ -80,9 +80,12 @@ const postcardService = {
 
   getPostcardByAlbumIdCount: async (albumId: string) => {
     try {
-      const response = await axios.get(`/postcards/inalbum/count/${albumId}`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `/api/postcards/inalbum/count/${albumId}`,
+        {
+          withCredentials: true,
+        }
+      );
       return response.data;
     } catch (error) {
       throw error;
@@ -91,7 +94,7 @@ const postcardService = {
 
   getPostcard: async (id: string) => {
     try {
-      const response = await axios.get(`/postcards/${id}`, {
+      const response = await axios.get(`/api/postcards/${id}`, {
         withCredentials: true,
       });
       return response.data;
@@ -102,7 +105,7 @@ const postcardService = {
 
   addPostcard: async (newPostcard: NewPostcard) => {
     try {
-      const response = await axios.post('/postcards', newPostcard, {
+      const response = await axios.post('/api/postcards', newPostcard, {
         withCredentials: true,
       });
       return response.data;
@@ -114,7 +117,7 @@ const postcardService = {
   updatePostcard: async (updatePostcard: Postcard) => {
     try {
       const response = await axios.put(
-        `/postcards/${updatePostcard.id}`,
+        `/api/postcards/${updatePostcard.id}`,
         updatePostcard,
         { withCredentials: true }
       );
@@ -126,7 +129,7 @@ const postcardService = {
 
   deletePostcard: async (postcardId: string) => {
     try {
-      await axios.delete(`/postcards/${postcardId}`, {
+      await axios.delete(`/api/postcards/${postcardId}`, {
         withCredentials: true,
       });
     } catch (error) {

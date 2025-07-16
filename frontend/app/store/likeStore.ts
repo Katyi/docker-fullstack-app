@@ -33,7 +33,7 @@ const useLikeStore = create<LikeState>((set) => ({
   error: null,
   getLikes: async (userId: string) => {
     try {
-      const response = await axios.get(`/likes/user/${userId}`, {
+      const response = await axios.get(`/api/likes/user/${userId}`, {
         withCredentials: true,
       });
       const likes = await response.data;
@@ -45,7 +45,7 @@ const useLikeStore = create<LikeState>((set) => ({
   getUserLikesCount: async (userId: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`/likes/userLikes/count/${userId}`, {
+      const response = await axios.get(`/api/likes/userLikes/count/${userId}`, {
         withCredentials: true,
       });
       const likesCount = await response.data;
@@ -64,7 +64,7 @@ const useLikeStore = create<LikeState>((set) => ({
       take: take,
     };
     try {
-      const response = await axios.get(`/likes/userLikes/${userId}`, {
+      const response = await axios.get(`/api/likes/userLikes/${userId}`, {
         params,
         withCredentials: true,
       });
@@ -80,7 +80,7 @@ const useLikeStore = create<LikeState>((set) => ({
   },
   addLike: async (newLike: newLike) => {
     try {
-      const response = await axios.post('/likes', newLike, {
+      const response = await axios.post('/api/likes', newLike, {
         withCredentials: true,
       });
       const like = await response.data;
@@ -91,7 +91,7 @@ const useLikeStore = create<LikeState>((set) => ({
   },
   deleteLike: async (id: string) => {
     try {
-      await axios.delete(`/likes/${id}`, { withCredentials: true });
+      await axios.delete(`/api/likes/${id}`, { withCredentials: true });
       set((state) => ({
         likes: state.likes.filter((like) => like.id !== id),
         isLoading: false,
@@ -103,7 +103,7 @@ const useLikeStore = create<LikeState>((set) => ({
   },
   deleteLikesOfPostcard: async (postcardId: string) => {
     try {
-      await axios.delete(`/likes/postcard/${postcardId}`, {
+      await axios.delete(`/api/likes/postcard/${postcardId}`, {
         withCredentials: true,
       });
       set((state) => ({

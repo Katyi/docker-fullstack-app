@@ -4,13 +4,14 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import useAuthStore from '../store/authStore';
 import useUserStore from '../store/userStore';
-import { userRequest } from '@/lib/requestMethods';
+import { BASE_URL, userRequest } from '@/lib/requestMethods';
 import { formatDay } from '@/lib/formating';
 import Loader from '@/components/loader/loader';
 import SelectComponent from '@/components/ui/select';
 import { userSchema } from '@/lib/schema';
 import { UploadIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
+import userService from '@/lib/services/userService';
 
 const Account = () => {
   const router = useRouter();
@@ -51,13 +52,14 @@ const Account = () => {
 
   const deleteImage = async (image: string) => {
     if (image) {
-      const fileName = image.slice(28);
-      console.log(fileName);
+      const fileName = image.slice(7);
       try {
-        await userRequest.delete('/upload/image-delete', {
+        await userRequest.delete('/api/upload/image-delete', {
           data: { fileName: fileName },
         });
         await updateUser({ ...currentUser, imageUrl: null });
+        const freshUser = await userService.getUser(currentUser.id);
+        useAuthStore.getState().setUser(freshUser);
         await getUser(currentUser.id);
         setCurrentUser({ ...currentUser, imageUrl: null });
         setImageUrl([]);
@@ -73,16 +75,23 @@ const Account = () => {
     if (file) {
       try {
         if (user?.imageUrl) {
-          const fileName = user.imageUrl.slice(28);
-          await userRequest.delete('/upload/image-delete', {
+          const fileName = user.imageUrl.slice(7);
+          await userRequest.delete('/api/upload/image-delete', {
             data: { fileName: fileName },
           });
         }
-        const response = await userRequest.post('/upload/image-upload', file);
+        const response = await userRequest.post(
+          '/api/upload/image-upload',
+          file
+        );
         const imageUrl = response.data.imageUrl;
         await updateUser({ ...currentUser, imageUrl });
-        setImageUrl([]);
+
+        const freshUser = await userService.getUser(currentUser.id);
+        useAuthStore.getState().setUser(freshUser);
+        // setCurrentUser(freshUser);
         if (user?.id) await getUser(user.id);
+        setImageUrl([]);
       } catch (error) {
         console.log(error);
       }
@@ -157,10 +166,11 @@ const Account = () => {
           </div>
           <Image
             src={
-              imageUrl.length === 1
-                ? imageUrl[0]
-                : currentUser?.imageUrl
-                ? currentUser.imageUrl
+              // imageUrl.length === 1
+              //   ? imageUrl[0]
+
+              currentUser?.imageUrl
+                ? `${BASE_URL}${currentUser.imageUrl}`
                 : '/user.png'
             }
             alt="currUser"

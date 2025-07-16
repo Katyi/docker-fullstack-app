@@ -62,10 +62,10 @@ const AlbumPage = () => {
   const numberOfPages = Math.ceil(postcardsInAlbumCount / pageSize);
 
   const deleteImage = async (image: string) => {
-    const fileName = image.slice(28);
+    const fileName = image.slice(7);
 
     try {
-      await userRequest.delete('/upload/image-delete', {
+      await userRequest.delete('/api/upload/image-delete', {
         data: { fileName: fileName },
       });
     } catch (error) {

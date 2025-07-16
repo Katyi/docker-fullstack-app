@@ -30,7 +30,7 @@ const useAlbumStore = create<AlbumState>((set) => ({
       take: take,
     };
     try {
-      const response = await axios.get(`/albums/user/${userId}`, {
+      const response = await axios.get(`/api/albums/user/${userId}`, {
         params,
         withCredentials: true,
       });
@@ -42,7 +42,7 @@ const useAlbumStore = create<AlbumState>((set) => ({
   },
   getUserAlbumCount: async (userId: string) => {
     try {
-      const response = await axios.get(`/albums/user/count/${userId}`, {
+      const response = await axios.get(`/api/albums/user/count/${userId}`, {
         withCredentials: true,
       });
       const albumsCount = await response.data;
@@ -57,7 +57,7 @@ const useAlbumStore = create<AlbumState>((set) => ({
   },
   getAlbum: async (id: string) => {
     try {
-      const response = await axios.get(`/albums/${id}`, {
+      const response = await axios.get(`/api/albums/${id}`, {
         withCredentials: true,
       });
       const album = await response.data;
@@ -68,7 +68,7 @@ const useAlbumStore = create<AlbumState>((set) => ({
   },
   addAlbum: async (newAlbum: NewAlbum) => {
     try {
-      const response = await axios.post('/albums', newAlbum, {
+      const response = await axios.post('/api/albums', newAlbum, {
         withCredentials: true,
       });
       const album = await response.data;
@@ -80,7 +80,7 @@ const useAlbumStore = create<AlbumState>((set) => ({
   updateAlbum: async (updatedAlbum: UpdateAlbum) => {
     try {
       const response = await axios.put(
-        `/albums/${updatedAlbum.id}`,
+        `/api/albums/${updatedAlbum.id}`,
         updatedAlbum,
         { withCredentials: true }
       );
@@ -96,7 +96,7 @@ const useAlbumStore = create<AlbumState>((set) => ({
   },
   deleteAlbum: async (albumId: string) => {
     try {
-      await axios.delete(`/albums/${albumId}`, { withCredentials: true });
+      await axios.delete(`/api/albums/${albumId}`, { withCredentials: true });
       set((state) => ({
         albums: state.albums.filter((album) => album.id !== albumId),
       }));

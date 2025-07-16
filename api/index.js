@@ -58,12 +58,12 @@ app.get('/test', (req, res) => {
 });
 
 // routes
-app.use('/users', userRoutes);
-app.use('/auth', authRoutes);
-app.use('/postcards', postcardRoutes);
-app.use('/likes', likeRoutes);
-app.use('/albums', albumRoutes);
-app.use('/upload', imageRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/postcards', postcardRoutes);
+app.use('/api/likes', likeRoutes);
+app.use('/api/albums', albumRoutes);
+app.use('/api/upload', imageRoutes);
 
 // Start server
 const PORT = process.env.PORT || 4000;

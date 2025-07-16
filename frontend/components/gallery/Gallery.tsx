@@ -4,6 +4,7 @@ import { useJustifiedLayout } from '@/lib/useJustifiedLayout';
 import { Card } from '@radix-ui/themes';
 import Image from 'next/image';
 import Tooltip from '@/components/ui/tooltip';
+import { BASE_URL } from '@/lib/requestMethods';
 
 interface GalleryProps<T> {
   items: T[];
@@ -69,9 +70,10 @@ export default function Gallery<T>({
                 >
                   <Tooltip content="View postcard">
                     <Image
-                      src={img.src}
+                      src={`${BASE_URL}${img.src}`}
                       alt={img.alt || ''}
                       fill
+                      sizes="auto"
                       className="rounded-t-[8px] cursor-pointer object-cover"
                       onClick={() => {
                         const id =

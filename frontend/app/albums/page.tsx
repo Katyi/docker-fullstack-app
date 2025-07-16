@@ -18,6 +18,7 @@ import Tooltip from '@/components/ui/tooltip';
 import useAuthStore from '@/app/store/authStore';
 import { pageSize } from '@/lib/constants';
 import Pagination from '@/components/ui/pagination';
+import { BASE_URL } from '@/lib/requestMethods';
 
 const Albums = () => {
   const router = useRouter();
@@ -110,7 +111,7 @@ const Albums = () => {
             >
               {postcards.find((item) => item.albumId === album.id) ? (
                 <Image
-                  src={`${
+                  src={`${BASE_URL}${
                     postcards.findLast((item) => item.albumId === album.id)
                       ?.imageUrl
                   }`}
@@ -147,8 +148,6 @@ const Albums = () => {
           ))}
         </div>
 
-        
-
         {albumsCount > pageSize && (
           <>
             <br />
@@ -159,7 +158,6 @@ const Albums = () => {
             />
           </>
         )}
-        
       </div>
 
       {/* modal for create new user */}

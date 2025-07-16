@@ -9,7 +9,11 @@ const Footer = () => {
         <p className="font-[300] text-slate-600 text-small-bold">
           Copyright © A.Egorova {new Date().getFullYear()}
         </p>
-        <Link href="https://github.com/Katyi" target="_blank" tabIndex={-1}>
+        <Link
+          href="https://github.com/Katyi/docker-fullstack-app"
+          target="_blank"
+          tabIndex={-1}
+        >
           <Image src="/github.png" alt="githubIcon" width={40} height={40} />
         </Link>
       </div>

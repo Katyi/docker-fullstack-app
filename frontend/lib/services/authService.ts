@@ -5,7 +5,7 @@ axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 const authService = {
   async login(credentials: { email: string; password: string }) {
     try {
-      const response = await axios.post('/auth/login', credentials, {
+      const response = await axios.post('/api/auth/login', credentials, {
         withCredentials: true,
       });
       return response.data;
@@ -25,7 +25,7 @@ const authService = {
     password: string;
   }) {
     try {
-      const response = await axios.post('/auth/register', credentials, {
+      const response = await axios.post('/api/auth/register', credentials, {
         withCredentials: true,
       });
       return response.data;
@@ -36,7 +36,7 @@ const authService = {
 
   async logout() {
     try {
-      await axios.get('/auth/logout', { withCredentials: true });
+      await axios.get('/api/auth/logout', { withCredentials: true });
     } catch (error) {
       throw error;
     }
@@ -44,7 +44,9 @@ const authService = {
 
   async checkAuth() {
     try {
-      const response = await axios.get('/auth/me', { withCredentials: true });
+      const response = await axios.get('/api/auth/me', {
+        withCredentials: true,
+      });
       return response.data;
     } catch (error) {
       throw error;

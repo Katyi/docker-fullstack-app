@@ -2,6 +2,7 @@ import { getUser } from '@/lib/actions';
 import { formatDay } from '@/lib/formating';
 import Image from 'next/image';
 import Link from 'next/link';
+import { BASE_URL } from '@/lib/requestMethods';
 
 const UserPage = async (props: UserPageProps) => {
   const { userId } = await props.params;
@@ -19,7 +20,7 @@ const UserPage = async (props: UserPageProps) => {
     <main className="pageContainer">
       <div className="mt-6 flex flex-col md:flex-row items-center md:items-center md:justify-around bg-white w-full py-6">
         <Image
-          src={user.imageUrl ? user.imageUrl : '/user.png'}
+          src={user.imageUrl ? `${BASE_URL}${user.imageUrl}` : '/user.png'}
           alt="user"
           priority={true}
           width={0}

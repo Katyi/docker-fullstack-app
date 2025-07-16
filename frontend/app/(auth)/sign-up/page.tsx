@@ -64,7 +64,7 @@ const SignUp = () => {
     e.preventDefault();
     let imageUrl;
     if (file) {
-      const response = await userRequest.post('/upload/image-upload', file);
+      const response = await userRequest.post('/api/upload/image-upload', file);
       imageUrl = response.data.imageUrl;
     }
 
@@ -80,7 +80,7 @@ const SignUp = () => {
             birthday: new Date(newUser.birthday!).toISOString(),
           });
         } else {
-          await register({...newUser, imageUrl});
+          await register({ ...newUser, imageUrl });
         }
       } catch (error) {
         console.log(error);

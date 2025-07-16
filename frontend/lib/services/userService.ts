@@ -5,7 +5,7 @@ axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 const userService = {
   async getUsers() {
     try {
-      const response = await axios.get(`/users`);
+      const response = await axios.get(`/api/users`);
       return response.data;
     } catch (error) {
       throw error;
@@ -13,7 +13,7 @@ const userService = {
   },
   async getUser(id: string) {
     try {
-      const response = await axios.get(`users/${id}`, {
+      const response = await axios.get(`/api/users/${id}`, {
         withCredentials: true,
       });
       return response.data;
@@ -23,7 +23,7 @@ const userService = {
   },
   async addUser(newUser: NewUser) {
     try {
-      const response = await axios.post('/users', newUser);
+      const response = await axios.post('/api/users', newUser);
       return response.data;
     } catch (error) {
       throw error;
@@ -31,7 +31,10 @@ const userService = {
   },
   async updateUser(updatedUser: UpdUser) {
     try {
-      const response = await axios.put(`/users/${updatedUser.id}`, updatedUser);
+      const response = await axios.put(
+        `/api/users/${updatedUser.id}`,
+        updatedUser
+      );
       return response.data;
     } catch (error) {
       throw error;
@@ -39,7 +42,7 @@ const userService = {
   },
   async deleteUser(userId: string) {
     try {
-      const response = await axios.delete(`/users/${userId}`);
+      const response = await axios.delete(`/api/users/${userId}`);
       return response.data;
     } catch (error) {
       throw error;

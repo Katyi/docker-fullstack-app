@@ -3,6 +3,7 @@
 import useAuthStore from '@/app/store/authStore';
 import useUserStore from '@/app/store/userStore';
 import Loader from '@/components/loader/loader';
+import { BASE_URL } from '@/lib/requestMethods';
 import { Card } from '@radix-ui/themes';
 import { error } from 'console';
 import Image from 'next/image';
@@ -40,7 +41,7 @@ const UsersPage = () => {
             className="bg-gray-100 shadow-lg h-fit sm:h-[300px] flex-grow-0"
           >
             <Image
-              src={user.imageUrl ? user.imageUrl : '/user.png'}
+              src={user.imageUrl ? `${BASE_URL}${user.imageUrl}` : '/user.png'}
               alt="user"
               width={0}
               height={0}

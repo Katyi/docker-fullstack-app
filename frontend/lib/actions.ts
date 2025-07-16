@@ -10,7 +10,7 @@ export const getUser = async (id: string) => {
   const token = cookieStore.get('token');
 
   try {
-    const response = await axios.get(`/users/${id}`);
+    const response = await axios.get(`/api/users/${id}`);
     return response.data;
   } catch (error) {
     return error;
@@ -23,7 +23,7 @@ export const getPostcard = async (id: string) => {
   const token = cookieStore.get('token');
 
   try {
-    const response = await axios.get(`/postcards/${id}`);
+    const response = await axios.get(`/api/postcards/${id}`);
     return await response.data;
   } catch (error) {
     return error;
@@ -36,7 +36,7 @@ export const getAlbum = async (id: string) => {
   const token = cookieStore.get('token');
 
   try {
-    const response = await axios.get(`/albums/${id}`, {
+    const response = await axios.get(`/api/albums/${id}`, {
       headers: { Cookie: `token=${token?.value}` },
     });
     return await response.data;
