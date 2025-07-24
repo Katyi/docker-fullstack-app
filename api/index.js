@@ -57,13 +57,21 @@ app.get('/test', (req, res) => {
   }
 });
 
+const apiBasePath = process.env.NODE_ENV === 'production' ? '' : '/api';
+
 // routes
-app.use('/api/users', userRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/postcards', postcardRoutes);
-app.use('/api/likes', likeRoutes);
-app.use('/api/albums', albumRoutes);
-app.use('/api/upload', imageRoutes);
+// app.use('/api/users', userRoutes);
+// app.use('/api/auth', authRoutes);
+// app.use('/api/postcards', postcardRoutes);
+// app.use('/api/likes', likeRoutes);
+// app.use('/api/albums', albumRoutes);
+// app.use('/api/upload', imageRoutes);
+app.use(`${apiBasePath}/users`, userRoutes);
+app.use(`${apiBasePath}/auth`, authRoutes);
+app.use(`${apiBasePath}/postcards`, postcardRoutes);
+app.use(`${apiBasePath}/likes`, likeRoutes);
+app.use(`${apiBasePath}/albums`, albumRoutes);
+app.use(`${apiBasePath}/upload`, imageRoutes);
 
 // Start server
 const PORT = process.env.PORT || 4000;
