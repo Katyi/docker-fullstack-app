@@ -11,7 +11,6 @@ import Tooltip from '@/components/ui/tooltip';
 import { pageSize } from '@/lib/constants';
 import { HeartFilledIcon, HeartIcon } from '@radix-ui/react-icons';
 import { Card } from '@radix-ui/themes';
-import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 

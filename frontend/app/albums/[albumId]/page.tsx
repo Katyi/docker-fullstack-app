@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import AddPostcard from '@/components/addPostcard/addPostcard';
 import Modal from '@/components/modal/modal';
 import usePostcardStore from '@/app/store/postcardStore';
-import Image from 'next/image';
 import { Card } from '@radix-ui/themes';
 import { useParams } from 'next/navigation';
 import Loader from '@/components/loader/loader';

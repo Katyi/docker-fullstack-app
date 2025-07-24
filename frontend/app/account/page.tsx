@@ -12,6 +12,7 @@ import { userSchema } from '@/lib/schema';
 import { UploadIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import userService from '@/lib/services/userService';
+import { myImageLoader } from '@/lib/utils';
 
 const Account = () => {
   const router = useRouter();
@@ -165,13 +166,9 @@ const Account = () => {
             <p>You can edit your settings below.</p>
           </div>
           <Image
+            loader={myImageLoader}
             src={
-              // imageUrl.length === 1
-              //   ? imageUrl[0]
-
-              currentUser?.imageUrl
-                ? `${BASE_URL}${currentUser.imageUrl}`
-                : '/user.png'
+              currentUser?.imageUrl ? `${currentUser.imageUrl}` : '/user.png'
             }
             alt="currUser"
             priority={true}

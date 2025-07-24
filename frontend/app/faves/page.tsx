@@ -7,7 +7,6 @@ import usePostcardStore from '../store/postcardStore';
 import Loader from '@/components/loader/loader';
 import { Card } from '@radix-ui/themes';
 import Tooltip from '@/components/ui/tooltip';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Pagination from '@/components/ui/pagination';
 import { pageSize } from '@/lib/constants';

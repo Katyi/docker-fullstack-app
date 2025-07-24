@@ -19,6 +19,7 @@ import useAuthStore from '@/app/store/authStore';
 import { pageSize } from '@/lib/constants';
 import Pagination from '@/components/ui/pagination';
 import { BASE_URL } from '@/lib/requestMethods';
+import { myImageLoader } from '@/lib/utils';
 
 const Albums = () => {
   const router = useRouter();
@@ -111,7 +112,8 @@ const Albums = () => {
             >
               {postcards.find((item) => item.albumId === album.id) ? (
                 <Image
-                  src={`${BASE_URL}${
+                  loader={myImageLoader}
+                  src={`${
                     postcards.findLast((item) => item.albumId === album.id)
                       ?.imageUrl
                   }`}
