@@ -2,6 +2,7 @@ import useAlbumStore from '@/app/store/albumStore';
 import useAuthStore from '@/app/store/authStore';
 import usePostcardStore from '@/app/store/postcardStore';
 import { pageSize } from '@/lib/constants';
+import { myImageLoader } from '@/lib/utils';
 import { CrossCircledIcon } from '@radix-ui/react-icons';
 import { Checkbox } from '@radix-ui/themes';
 import Image from 'next/image';
@@ -43,6 +44,7 @@ const AddToAlbum = ({
           <div className="flex justify-between  items-center">
             {postcards.reverse().find((item) => item.albumId === album.id) ? (
               <Image
+                loader={myImageLoader}
                 src={`${
                   postcards.find((item) => item.albumId === album.id)?.imageUrl
                 }`}
