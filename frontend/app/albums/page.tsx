@@ -18,7 +18,6 @@ import Tooltip from '@/components/ui/tooltip';
 import useAuthStore from '@/app/store/authStore';
 import { pageSize } from '@/lib/constants';
 import Pagination from '@/components/ui/pagination';
-import { BASE_URL } from '@/lib/requestMethods';
 import { myImageLoader } from '@/lib/utils';
 
 const Albums = () => {

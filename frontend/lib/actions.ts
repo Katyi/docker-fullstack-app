@@ -4,13 +4,15 @@ import { cookies } from 'next/headers';
 axios.defaults.baseURL =
   process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL;
 
+const API_ROUTE_PREFIX = process.env.NODE_ENV === 'production' ? '' : '/api';
+
 // Get user by id
 export const getUser = async (id: string) => {
   const cookieStore = await cookies();
   const token = cookieStore.get('token');
 
   try {
-    const response = await axios.get(`/api/users/${id}`);
+    const response = await axios.get(`${API_ROUTE_PREFIX}/users/${id}`);
     return response.data;
   } catch (error) {
     return error;
@@ -23,7 +25,7 @@ export const getPostcard = async (id: string) => {
   const token = cookieStore.get('token');
 
   try {
-    const response = await axios.get(`/api/postcards/${id}`);
+    const response = await axios.get(`${API_ROUTE_PREFIX}/postcards/${id}`);
     return await response.data;
   } catch (error) {
     return error;
@@ -36,7 +38,7 @@ export const getAlbum = async (id: string) => {
   const token = cookieStore.get('token');
 
   try {
-    const response = await axios.get(`/api/albums/${id}`, {
+    const response = await axios.get(`${API_ROUTE_PREFIX}/albums/${id}`, {
       headers: { Cookie: `token=${token?.value}` },
     });
     return await response.data;

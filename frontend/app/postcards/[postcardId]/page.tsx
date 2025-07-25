@@ -1,6 +1,5 @@
 import { getAlbum, getPostcard } from '@/lib/actions';
 import { formatDay } from '@/lib/formating';
-import { BASE_URL } from '@/lib/requestMethods';
 import { myImageLoader } from '@/lib/utils';
 import Image from 'next/image';
 

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import useAuthStore from '../store/authStore';
 import useUserStore from '../store/userStore';
-import { BASE_URL, userRequest } from '@/lib/requestMethods';
+import { userRequest } from '@/lib/requestMethods';
 import { formatDay } from '@/lib/formating';
 import Loader from '@/components/loader/loader';
 import SelectComponent from '@/components/ui/select';

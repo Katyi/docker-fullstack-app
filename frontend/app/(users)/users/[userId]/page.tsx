@@ -2,7 +2,6 @@ import { getUser } from '@/lib/actions';
 import { formatDay } from '@/lib/formating';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BASE_URL } from '@/lib/requestMethods';
 import { myImageLoader } from '@/lib/utils';
 
 const UserPage = async (props: UserPageProps) => {
@@ -30,15 +29,6 @@ const UserPage = async (props: UserPageProps) => {
           sizes="100vw"
           className="w-full h-auto md:w-auto md:h-96"
         />
-        {/* <div>
-          <h1 className="text-xl font-bold text-gray-800 text-center mb-2">
-            {user?.name}
-          </h1>
-          <p>Email: {user?.email}</p>
-          <p>Country: {user?.country}</p>
-          <p>Birthday: {user?.birthday ? 'Yes' : 'No'}</p>
-          {user?.createdAt && <p>Joined: {formatDay(user?.createdAt)} </p>}
-        </div> */}
         <div className="p-4 w-full flex flex-col md:items-center">
           <h1 className="text-xl font-bold text-gray-800 text-center mb-2">
             {user?.name}
@@ -53,7 +43,6 @@ const UserPage = async (props: UserPageProps) => {
           <Link
             className="font-bold text-[#3475B9] border-b border-[#3475B9]"
             href={`/users/${user.id}/postcards`}
-            // onClick={() => router.push(`/users/${postcard.userId}`)}
           >
             User{`'`}s Gallery
           </Link>

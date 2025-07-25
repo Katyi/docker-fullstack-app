@@ -2,7 +2,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 import { postcardSchema } from '@/lib/schema';
 import usePostcardStore from '@/app/store/postcardStore';
 import { CrossCircledIcon, UploadIcon } from '@radix-ui/react-icons';
-import { BASE_URL, userRequest } from '../../lib/requestMethods';
+import { userRequest } from '../../lib/requestMethods';
 import Image from 'next/image';
 import { Checkbox } from '@radix-ui/themes';
 import { pageSize } from '@/lib/constants';
