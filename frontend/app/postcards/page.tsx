@@ -21,6 +21,7 @@ import { userRequest } from '@/lib/requestMethods';
 import Pagination from '@/components/ui/pagination';
 import { pageSize } from '@/lib/constants';
 import Gallery from '@/components/gallery/Gallery';
+import useImageStore from '../store/imageStore';
 
 const Postcards = () => {
   const router = useRouter();
@@ -38,6 +39,7 @@ const Postcards = () => {
   } = usePostcardStore();
   const { getLikes, likes, addLike, deleteLike, deleteLikesOfPostcard } =
     useLikeStore();
+  const { deleteImage } = useImageStore();
   const [addModal, setAddModal] = useState<boolean>(false);
   const [addModal1, setAddModal1] = useState<boolean>(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -53,13 +55,14 @@ const Postcards = () => {
 
   const numberOfPages = Math.ceil(postcardsCount / pageSize);
 
-  const deleteImage = async (image: string) => {
+  const handleDeleteImage = async (image: string) => {
     const fileName = image.slice(7);
 
     try {
-      await userRequest.delete('/api/upload/image-delete', {
-        data: { fileName: fileName },
-      });
+      // await userRequest.delete('/api/upload/image-delete', {
+      //   data: { fileName: fileName },
+      // });
+      await deleteImage(fileName);
     } catch (error) {
       console.log(error);
     }
@@ -113,7 +116,7 @@ const Postcards = () => {
   };
 
   const handleDeletePostcard = async (postcard: Postcard) => {
-    await deleteImage(postcard.imageUrl);
+    await handleDeleteImage(postcard.imageUrl);
     await deleteLikesOfPostcard(postcard.id);
     await deletePostcard(postcard.id);
     await getUserPostcardsCount(postcard.userId);

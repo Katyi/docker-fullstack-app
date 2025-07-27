@@ -32,21 +32,15 @@ app.use(
   })
 ); // Allow CORS from your frontend
 
-// --------------------------------------------------------------------
-// НОВОЕ: Настройка для отдачи статических файлов (изображений)
-// Убедитесь, что путь соответствует imageUploadPath из routes/images.js
-// и что папка 'uploads' действительно находится в корне вашего API проекта.
-// Если imageUploadPath = '/var/www/fileUpload/uploaded_files/media', то здесь нужно указать его.
+// Определяем путь к папке с медиа файлами
 let staticFilesPath;
 if (process.env.NODE_ENV === 'production') {
-  staticFilesPath = '/var/www/fileUpload/uploaded_files/media';
+  staticFilesPath = '/var/www/fileUpload/uploaded_files/media'; // для сервера
 } else {
-  staticFilesPath = path.join(__dirname, 'uploads'); // Папка 'uploads' в корне API
+  staticFilesPath = path.join(__dirname, 'uploads'); // Папка 'uploads' в корне папки api
 }
 
 app.use('/media', express.static(staticFilesPath)); // <-- Отдаем файлы по URL /media
-// Теперь изображения будут доступны по адресу: http://yourdomain.com/media/имя_файла.jpg
-// --------------------------------------------------------------------
 
 // Test API
 app.get('/test', (req, res) => {
@@ -60,12 +54,6 @@ app.get('/test', (req, res) => {
 const apiBasePath = process.env.NODE_ENV === 'production' ? '' : '/api';
 
 // routes
-// app.use('/api/users', userRoutes);
-// app.use('/api/auth', authRoutes);
-// app.use('/api/postcards', postcardRoutes);
-// app.use('/api/likes', likeRoutes);
-// app.use('/api/albums', albumRoutes);
-// app.use('/api/upload', imageRoutes);
 app.use(`${apiBasePath}/users`, userRoutes);
 app.use(`${apiBasePath}/auth`, authRoutes);
 app.use(`${apiBasePath}/postcards`, postcardRoutes);

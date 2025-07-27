@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Checkbox } from '@radix-ui/themes';
 import { pageSize } from '@/lib/constants';
 import useAuthStore from '@/app/store/authStore';
+import useImageStore from '@/app/store/imageStore';
 
 interface ComponentProps {
   newPostcard: NewPostcard;
@@ -39,6 +40,7 @@ const AddPostcard = ({
     getUserPostcardsCount,
     getPostcardByAlbumIdCount,
   } = usePostcardStore();
+  const { uploadImage } = useImageStore();
   const [errors, setErrors] = useState<ValidationErrors>({});
 
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -67,15 +69,23 @@ const AddPostcard = ({
   };
 
   //create postcard
-  const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAddPostcard = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let width, height, imageUrl;
     if (file) {
       // await fetchImage();
-      const response = await userRequest.post('/api/upload/image-upload', file);
-      width = response.data.width;
-      height = response.data.height;
-      imageUrl = response.data.imageUrl;
+      // const response = await userRequest.post('/api/upload/image-upload', file);
+      // width = response.data.width;
+      // height = response.data.height;
+      // imageUrl = response.data.imageUrl;
+
+      await uploadImage(file);
+      const uploaded = useImageStore.getState().uploadedImage;
+      if (uploaded) {
+        width = uploaded?.width;
+        height = uploaded?.height;
+        imageUrl = uploaded?.imageUrl;
+      }
     }
 
     const postcardToSend = {
@@ -118,7 +128,7 @@ const AddPostcard = ({
 
   return (
     <form
-      onSubmit={handleAddUser}
+      onSubmit={handleAddPostcard}
       className="p-4 w-[30vw] bg-[#bbd6e2] rounded shadow flex flex-col"
     >
       <div className="flex w-full justify-end mb-4">
