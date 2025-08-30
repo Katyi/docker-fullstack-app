@@ -93,14 +93,19 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-//delete album
 router.delete('/:id', checkAuth, async (req, res) => {
   try {
-    const album = await prisma.album.delete({
-      where: {
-        id: req.params.id,
-      },
+    // 1. Удаляем albumId у всех связанных карточек
+    await prisma.postcard.updateMany({
+      where: { albumId: req.params.id },
+      data: { albumId: null },
     });
+
+    // 2. Удаляем сам альбом
+    const album = await prisma.album.delete({
+      where: { id: req.params.id },
+    });
+
     res.status(200).json(album);
   } catch (error) {
     res.status(500).json({ message: error.message });

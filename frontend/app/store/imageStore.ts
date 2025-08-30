@@ -10,7 +10,12 @@ interface ImageState {
     height: number;
     fileName: string;
   } | null;
-  uploadImage: (file: FormData) => Promise<void>;
+  uploadImage: (file: FormData) => Promise<{
+    imageUrl: string;
+    width: number;
+    height: number;
+    fileName: string;
+  }>;
   deleteImage: (fileName: string) => Promise<void>;
   clear: () => void;
 }
@@ -25,8 +30,10 @@ const useImageStore = create<ImageState>((set) => ({
     try {
       const data = await imageService.imageUpload(file);
       set({ uploadedImage: data, isLoading: false });
+      return data;
     } catch (error: any) {
       set({ error: error.message || 'Upload error', isLoading: false });
+      throw error;
     }
   },
 

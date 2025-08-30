@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 
 const UserPostcards = () => {
   const { user, error, isLoading, getUser } = useUserStore();
+  const { user: currentUser } = useAuthStore();
   const {
     getPublicPostcards,
     publicPostcards,
@@ -86,8 +87,8 @@ const UserPostcards = () => {
   }, [getPublicPostcards, getUser, userId, currentPage]);
 
   useEffect(() => {
-    if (user?.id) getLikes(user.id);
-  }, [user, getLikes]);
+    if (currentUser?.id) getLikes(currentUser.id);
+  }, [currentUser, getLikes]);
 
   if (error) {
     return (

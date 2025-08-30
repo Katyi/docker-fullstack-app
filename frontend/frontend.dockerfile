@@ -38,7 +38,8 @@ RUN yarn build && ls -laR /app/frontend/.next
 FROM base AS runner
 WORKDIR /app/frontend
 
-ENV NODE_ENV=production
+
+# ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
 

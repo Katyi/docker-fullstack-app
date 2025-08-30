@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import useAuthStore from '../store/authStore';
 import useUserStore from '../store/userStore';
-import { userRequest } from '@/lib/requestMethods';
 import { formatDay } from '@/lib/formating';
 import Loader from '@/components/loader/loader';
 import SelectComponent from '@/components/ui/select';
@@ -13,10 +12,12 @@ import { UploadIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import userService from '@/lib/services/userService';
 import { myImageLoader } from '@/lib/utils';
+import useImageStore from '../store/imageStore';
 
 const Account = () => {
   const router = useRouter();
   const { user: authUser, isLoading: authLoading, error } = useAuthStore();
+  const { uploadImage, deleteImage, error: imageError } = useImageStore();
   const { user, getUser, updateUser } = useUserStore();
   const [hydrated, setHydrated] = useState(false);
 
@@ -37,32 +38,25 @@ const Account = () => {
         setImageUrl(newImageUrl);
       }
 
-      // const forNameOfFile = `${Date.now()}_${files[0].name}`;
       const formData = new FormData();
-      // formData.append('file', files[0], forNameOfFile);
       formData.append('file', files[0], files[0].name);
       if (setFile) {
         setFile(formData);
       }
-      // setCurrentUser({
-      //   ...currentUser,
-      //   imageUrl: `http://212.113.120.58/media/${forNameOfFile}`,
-      // });
     }
   };
 
-  const deleteImage = async (image: string) => {
+  const handleDeleteImage = async (image: string) => {
     if (image) {
       const fileName = image.slice(7);
       try {
-        await userRequest.delete('/api/upload/image-delete', {
-          data: { fileName: fileName },
-        });
+        await deleteImage(fileName);
         await updateUser({ ...currentUser, imageUrl: null });
         const freshUser = await userService.getUser(currentUser.id);
         useAuthStore.getState().setUser(freshUser);
         await getUser(currentUser.id);
         setCurrentUser({ ...currentUser, imageUrl: null });
+        setFile(null);
         setImageUrl([]);
       } catch (error) {
         console.log(error);
@@ -77,15 +71,11 @@ const Account = () => {
       try {
         if (user?.imageUrl) {
           const fileName = user.imageUrl.slice(7);
-          await userRequest.delete('/api/upload/image-delete', {
-            data: { fileName: fileName },
-          });
+          await deleteImage(fileName);
         }
-        const response = await userRequest.post(
-          '/api/upload/image-upload',
-          file
-        );
-        const imageUrl = response.data.imageUrl;
+        let imageUrl: string | undefined = undefined;
+        const uploaded = await uploadImage(file);
+        if (uploaded) imageUrl = uploaded.imageUrl;
         await updateUser({ ...currentUser, imageUrl });
 
         const freshUser = await userService.getUser(currentUser.id);
@@ -167,9 +157,10 @@ const Account = () => {
           </div>
           <Image
             loader={myImageLoader}
-            src={
-              currentUser?.imageUrl ? `${currentUser.imageUrl}` : '/user.png'
-            }
+            src={currentUser?.imageUrl || '/user.png'}
+            // src={
+            //   currentUser?.imageUrl ? currentUser.imageUrl : '/user.png'
+            // }
             alt="currUser"
             priority={true}
             width={0}
@@ -177,6 +168,19 @@ const Account = () => {
             sizes="100vw"
             className="w-full h-auto md:h-96"
           />
+          {/* {imageUrl.length > 0 && (
+            <div className="mt-2">
+              <Image
+                src={imageUrl[0]}
+                alt="preview"
+                width={100}
+                height={100}
+                className="rounded border"
+                style={{ objectFit: 'cover', maxHeight: 100, maxWidth: 100 }}
+              />
+              <p className="text-xs text-gray-500">Preview (не загружено)</p>
+            </div>
+          )} */}
           <label
             htmlFor="file"
             className="cursor-pointer flex items-center gap-1 mt-4"
@@ -201,12 +205,15 @@ const Account = () => {
               type="button"
               className="w-28 mt-4 p-1 text-white bg-[#d72147] rounded hover:bg-[#b81134] focus:outline-none focus:bg-[#b81134] cursor-pointer appearance-auto"
               onClick={() =>
-                currentUser?.imageUrl && deleteImage(currentUser.imageUrl)
+                currentUser?.imageUrl && handleDeleteImage(currentUser.imageUrl)
               }
             >
               Delete
             </button>
           </div>
+          {imageError && (
+            <p className="text-xs text-red-500 mt-2">{imageError}</p>
+          )}
         </form>
 
         {/* USER DATA */}

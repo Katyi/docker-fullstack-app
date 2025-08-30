@@ -1,9 +1,6 @@
-// const router = require('express').Router();
 const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
-const checkAuth = require('../utils/checkAuth');
-
 const prisma = new PrismaClient();
 
 // Get all users
@@ -23,13 +20,20 @@ router.get('/', async (req, res) => {
 
 //get user by id
 router.get('/:id', async (req, res) => {
+  const userId = req.params.id;
+
   try {
     const user = await prisma.user.findUnique({
       where: {
-        id: req.params.id,
+        id: userId,
       },
     });
-    res.status(200).json(user);
+
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

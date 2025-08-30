@@ -2,19 +2,17 @@ import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 import { postcardSchema } from '@/lib/schema';
 import usePostcardStore from '@/app/store/postcardStore';
 import { CrossCircledIcon, UploadIcon } from '@radix-ui/react-icons';
-import { userRequest } from '../../lib/requestMethods';
 import Image from 'next/image';
 import { Checkbox } from '@radix-ui/themes';
 import { pageSize } from '@/lib/constants';
-import useAuthStore from '@/app/store/authStore';
 import useImageStore from '@/app/store/imageStore';
 
 interface ComponentProps {
   newPostcard: NewPostcard;
   setNewPostcard: Dispatch<SetStateAction<NewPostcard>>;
   setAddModal: Dispatch<SetStateAction<boolean>>;
-  album?: Album | null; // for postcards in album
-  postcardsInAlbum?: Postcard[]; // for postcards in album
+  album?: Album | null;
+  postcardsInAlbum?: Postcard[];
   imageUrls?: string[];
   setImageUrls?: Dispatch<SetStateAction<string[]>>;
   file?: FormData | null;
@@ -53,18 +51,11 @@ const AddPostcard = ({
         setImageUrls(newImageUrls);
       }
 
-      // const forNameOfFile = `${Date.now()}_${files[0].name}`;
       const formData = new FormData();
       formData.append('file', files[0], files[0].name);
       if (setFile) {
         setFile(formData);
       }
-      // setNewPostcard({
-      //   ...newPostcard,
-      //   // imageUrl: `http://212.113.120.58/media/${forNameOfFile}`,
-      //   // imageUrl: `http://localhost:4000/media/${forNameOfFile}`,
-      //   // http://localhost:4000/media/1752139305418_IMG_0032.jpg
-      // });
     }
   };
 
@@ -73,12 +64,6 @@ const AddPostcard = ({
     e.preventDefault();
     let width, height, imageUrl;
     if (file) {
-      // await fetchImage();
-      // const response = await userRequest.post('/api/upload/image-upload', file);
-      // width = response.data.width;
-      // height = response.data.height;
-      // imageUrl = response.data.imageUrl;
-
       await uploadImage(file);
       const uploaded = useImageStore.getState().uploadedImage;
       if (uploaded) {

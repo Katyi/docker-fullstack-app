@@ -8,12 +8,13 @@ import useAuthStore from '@/app/store/authStore';
 import SelectComponent from '@/components/ui/select';
 import { UploadIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
-import { userRequest } from '@/lib/requestMethods';
 import Loader from '@/components/loader/loader';
+import useImageStore from '@/app/store/imageStore';
 
 const SignUp = () => {
   const router = useRouter();
   const { error, register, isLoggedIn, isLoading } = useAuthStore();
+  const { uploadImage } = useImageStore();
   const [newUser, setNewUser] = useState<NewUser>({
     name: '',
     email: '',
@@ -47,47 +48,41 @@ const SignUp = () => {
     }
   };
 
-  // const fetchImage = async () => {
-  //   try {
-  //     const response = await userRequest.post('/upload/image-upload', file);
-  //     const imageUrl = response.data.imageUrl;
-  //     await setNewUser({
-  //       ...newUser,
-  //       imageUrl,
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let imageUrl;
-    if (file) {
-      const response = await userRequest.post('/api/upload/image-upload', file);
-      imageUrl = response.data.imageUrl;
-    }
-
     const result = userSchema.safeParse(newUser);
 
-    if (result.success) {
-      try {
-        setErrors({});
-        if (newUser.birthday) {
-          await register({
-            ...newUser,
-            imageUrl: imageUrl,
-            birthday: new Date(newUser.birthday!).toISOString(),
-          });
-        } else {
-          await register({ ...newUser, imageUrl });
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
+    if (!result.success) {
       const validationErrors = result.error.flatten().fieldErrors;
       setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
+    let imageUrl: string | undefined = undefined;
+
+    if (file) {
+      try {
+        const uploaded = await uploadImage(file);
+        if (uploaded) imageUrl = uploaded.imageUrl;
+      } catch (error) {
+        setErrors({ ...errors, image: ['Failed to upload image'] });
+        return;
+      }
+    }
+
+    try {
+      if (newUser.birthday) {
+        await register({
+          ...newUser,
+          imageUrl: imageUrl,
+          birthday: new Date(newUser.birthday!).toISOString(),
+        });
+      } else {
+        await register({ ...newUser, imageUrl });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

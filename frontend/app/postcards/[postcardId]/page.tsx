@@ -1,26 +1,61 @@
-import { getAlbum, getPostcard } from '@/lib/actions';
+'use client';
+
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import useAlbumStore from '@/app/store/albumStore';
+import usePostcardStore from '@/app/store/postcardStore';
 import { formatDay } from '@/lib/formating';
 import { myImageLoader } from '@/lib/utils';
 import Image from 'next/image';
 
-const PostcardPage = async (props: PostcardPageProps) => {
-  const { postcardId } = await props.params;
-  const postcard: Postcard = await getPostcard(postcardId);
-  const album = postcard?.albumId ? await getAlbum(postcard.albumId) : null;
+const PostcardPage = () => {
+  const params = useParams<{ postcardId: string }>();
+  const postcardId = params?.postcardId;
+  const {
+    postcard,
+    getPostcard,
+    isLoading: isPostcardLoading,
+  } = usePostcardStore();
+  const { album, getAlbum, isLoading: isAlbumLoading } = useAlbumStore();
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [albumLoading, setAlbumLoading] = useState(false);
 
-  if (!postcard.id) {
+  useEffect(() => {
+    // Выполняем загрузку только если ID открытки есть и она еще не загружена в хранилище
+    if (postcardId && postcard?.id !== postcardId) {
+      getPostcard(postcardId);
+    }
+  }, [postcardId, getPostcard, postcard?.id]);
+
+  useEffect(() => {
+    // Выполняем загрузку только если ID альбома есть и он еще не загружен в хранилище
+    if (postcard?.albumId && album?.id !== postcard.albumId) {
+      getAlbum(postcard.albumId);
+    }
+  }, [postcard?.albumId, album?.id, getAlbum, postcard]);
+
+  if (!postcardId) {
     return (
       <div className="pageContainer justify-center">
         <p className="text-red-500 font-bold text-lg">Postcard ID not found</p>
       </div>
     );
   }
+
+  if (isPostcardLoading || !postcard) {
+    return (
+      <div className="pageContainer justify-center">
+        <p className="text-gray-600 font-bold text-lg">Loading postcard...</p>
+      </div>
+    );
+  }
+
   return (
     <main className="pageContainer">
       <div className="mt-6 flex flex-col lg:flex-row lg:justify-around bg-white w-full lg:p-6">
         <Image
           loader={myImageLoader}
-          src={`${postcard.imageUrl}`}
+          src={`${postcard?.imageUrl}`}
           alt="postcard"
           priority={true}
           width={0}

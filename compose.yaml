@@ -14,6 +14,8 @@ services:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
       # Для серверной части (в контейнере Next.js), используется http://api:4000
       - API_INTERNAL_URL=http://api:4000
+      # Для прямого подключения к базе данных из серверных компонентов
+      # - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - NODE_OPTIONS="--dns-result-order=ipv4first"
     restart: always
     depends_on:
@@ -27,14 +29,22 @@ services:
     ports:
       - 4000:4000
     environment:
-      # - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=public
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - JWT_SECRET=${JWT_SECRET}
       - NODE_ENV=${NODE_ENV}
     restart: always
     volumes:
-      # - ./media:/var/www/fileUpload/uploaded_files/media
-      - /var/www/fileUpload/uploaded_files/media:/var/www/fileUpload/uploaded_files/media
+      # - /var/www/fileUpload/uploaded_files/media:/var/www/fileUpload/uploaded_files/media
+
+      # 👇 ЭТА СТРОКА ДЛЯ РЕЖИМА DEVELOPMENT (NODE_ENV=development)
+      # Локальная папка ./api/uploads будет примонтирована к /app/uploads в контейнере.
+      # Ваше API будет писать сюда в dev-режиме, и файлы будут видны на хосте.
+      - ./api/uploads:/app/uploads
+      # 👇 ЭТА СТРОКА ДЛЯ РЕЖИМА PRODUCTION (NODE_ENV=production)
+      # Именованный том Docker 'api_media_data' будет примонтирован
+      # к /var/www/fileUpload/uploaded_files/media в контейнере.
+      # Ваше API будет писать сюда в prod-режиме.
+      - api_media_data:/var/www/fileUpload/uploaded_files/media
   db:
     container_name: db
     image: postgres:12
@@ -50,3 +60,7 @@ services:
 
 volumes:
   pgdata: {}
+  # 👇 Объявляем именованный том.
+  # Он будет создан и управляться Docker'ом.
+  # Используется, когда NODE_ENV=production.
+  api_media_data: {}

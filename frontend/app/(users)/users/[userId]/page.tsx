@@ -1,17 +1,38 @@
-import { getUser } from '@/lib/actions';
+'use client';
+
 import { formatDay } from '@/lib/formating';
 import Image from 'next/image';
 import Link from 'next/link';
 import { myImageLoader } from '@/lib/utils';
+import useUserStore from '@/app/store/userStore';
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 
-const UserPage = async (props: UserPageProps) => {
-  const { userId } = await props.params;
-  const user = await getUser(userId);
+const UserPage = () => {
+  const params = useParams<{ userId: string }>();
+  const userId = params?.userId;
+  const { user, getUser } = useUserStore();
+  const [isLoading, setIsLoading] = useState(false);
 
-  if (!user.id) {
+  useEffect(() => {
+    if (userId && user?.id !== userId) {
+      setIsLoading(true);
+      getUser(userId).finally(() => setIsLoading(false));
+    }
+  }, [userId, user?.id]);
+
+  if (!userId) {
     return (
       <div className="pageContainer justify-center">
         <p className="text-red-500 font-bold text-lg">User ID not found</p>
+      </div>
+    );
+  }
+
+  if (isLoading || !user?.id) {
+    return (
+      <div className="pageContainer justify-center">
+        <p className="text-red-500 font-bold text-lg">Loading user...</p>
       </div>
     );
   }

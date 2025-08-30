@@ -24,6 +24,7 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
+      'http://localhost:3001',
       'http://frontend:3000',
       'http://212.113.120.58:3001',
       'http://postcardfolio.ru',
