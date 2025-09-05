@@ -35,9 +35,9 @@ const UserPostcards = () => {
 
   const handleLikePostcard = async (postcard: Postcard) => {
     try {
-      if (user?.id) {
-        await addLike({ userId: user.id, postcardId: postcard.id });
-        await getLikes(user.id);
+      if (currentUser?.id) {
+        await addLike({ userId: currentUser.id, postcardId: postcard.id });
+        await getLikes(currentUser.id);
         await updatePostcard({
           ...postcard,
           likes: postcard.likes ? postcard.likes + 1 : 1,
